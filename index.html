@@ -10,22 +10,25 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root {
-    /* Restrained editorial palette — pure off-white + near-black + single navy accent */
-    --bg:           #fbfaf6;
+    /* Institutional palette — BlackRock / Jane Street school.
+       Pure white ground. Near-black type. A single restrained coral accent
+       used very sparingly. Whitespace and type carry the weight, not colour. */
+    --bg:           #ffffff;
     --paper:        #ffffff;
-    --ink:          #1a1a1a;
-    --ink-soft:     #3d3d3d;
-    --ink-mid:      #6a6a6a;
-    --ink-faint:    #9a9a9a;
-    --rule:         #ebe8df;
-    --rule-strong:  #cdc8b8;
-    --accent:       #2d4860;        /* deep desaturated navy — the only chrome colour */
-    --accent-soft:  #e8edf3;
+    --paper-2:      #f6f5f3;        /* subtle hover / code tint */
+    --ink:          #0a0a0a;        /* near-black, slightly softened from #000 */
+    --ink-soft:     #2a2a2a;
+    --ink-mid:      #555555;
+    --ink-faint:    #8a8a8a;
+    --rule:         #e8e8e6;
+    --rule-strong:  #c4c4c2;
+    --accent:       #d8442a;        /* coral red, JS-tinted but a touch deeper */
+    --accent-soft:  #fbeae5;
 
-    /* Rating colours: muted, single-tone */
-    --buy:    #1f5e3f;
-    --hold:   #7a5a14;
-    --sell:   #8a2424;
+    /* Rating colours: institutional, deeper saturations */
+    --buy:    #14543a;
+    --hold:   #6d4d10;
+    --sell:   #a8281c;
 
     --serif: "Source Serif 4", "Noto Serif SC", "Charter", "Songti SC", "STSong", Georgia, serif;
     --sans:  "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
@@ -54,8 +57,8 @@
 
   /* ===== Site header (minimal) ===== */
   .site-header {
-    border-bottom: 1px solid var(--rule);
-    background: var(--paper);
+    border-bottom: 1px solid var(--rule-strong);
+    background: var(--bg);
   }
   .site-header-inner {
     max-width: 1100px;
@@ -102,7 +105,7 @@
   }
   .views-mini .count { color: var(--ink); font-weight: 500; }
   select {
-    background: var(--paper);
+    background: transparent;
     color: var(--ink);
     border: 1px solid var(--rule-strong);
     border-radius: 2px;
@@ -132,13 +135,13 @@
     transition: all 0.15s;
   }
   .lang-toggle button:last-child { border-right: none; }
-  .lang-toggle button.active { background: var(--ink); color: var(--paper); }
+  .lang-toggle button.active { background: var(--ink); color: var(--bg); }
 
   /* ===== Page container ===== */
   main {
-    max-width: 1100px;
+    max-width: 1140px;
     margin: 0 auto;
-    padding: 56px 32px 80px;
+    padding: 80px 40px 96px;
   }
   .breadcrumb {
     font-family: var(--sans);
@@ -171,19 +174,19 @@
   .home-title h1 {
     font-family: var(--serif);
     font-weight: 600;
-    font-size: 44px;
-    line-height: 1.1;
-    margin: 0 0 14px;
-    letter-spacing: -0.018em;
+    font-size: 52px;
+    line-height: 1.05;
+    margin: 0 0 18px;
+    letter-spacing: -0.022em;
     color: var(--ink);
   }
   .home-title .lede {
     font-family: var(--serif);
-    font-size: 19px;
-    line-height: 1.55;
+    font-size: 20px;
+    line-height: 1.52;
     color: var(--ink-soft);
     margin: 0;
-    max-width: 640px;
+    max-width: 660px;
   }
   .home-title .dateline {
     font-family: var(--sans);
@@ -249,19 +252,28 @@
     margin-bottom: 8px;
   }
   .ticker-card {
-    padding: 22px 26px 22px 0;
+    padding: 22px 24px 22px 0;
     cursor: pointer;
-    transition: background 0.12s;
+    transition: padding 0.18s ease, border-color 0.15s;
     display: flex;
     flex-direction: column;
     gap: 10px;
     color: var(--ink);
     border-bottom: 1px solid var(--rule);
+    border-top: 1px solid transparent;
     text-decoration: none;
+    position: relative;
   }
-  .ticker-card { border-bottom-style: solid; }
-  .ticker-card:hover { background: #f4f1e9; border-bottom-color: var(--rule); }
-  .ticker-card:hover { padding-left: 12px; padding-right: 14px; transition: padding 0.12s, background 0.12s; }
+  .ticker-card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: -1px;
+    width: 0;
+    background: var(--accent);
+    transition: width 0.18s ease;
+  }
+  .ticker-card:hover { padding-left: 18px; }
+  .ticker-card:hover::before { width: 2px; }
   .ticker-card-head {
     display: flex;
     align-items: flex-start;
@@ -354,15 +366,15 @@
   .article-header h1 {
     font-family: var(--serif);
     font-weight: 600;
-    font-size: 38px;
-    line-height: 1.15;
-    margin: 0 0 12px;
-    letter-spacing: -0.018em;
+    font-size: 42px;
+    line-height: 1.12;
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
     color: var(--ink);
   }
   .article-header .deck {
     font-family: var(--serif);
-    font-size: 19px;
+    font-size: 20px;
     color: var(--ink-soft);
     line-height: 1.5;
     margin: 0;
@@ -453,7 +465,7 @@
   article.body code {
     font-family: var(--mono);
     font-size: 14.5px;
-    background: #f0ece1;
+    background: var(--paper-2);
     padding: 1px 5px;
     border-radius: 1px;
   }
@@ -528,6 +540,7 @@
   .history-item .h-rating.Buy, .history-item .h-rating.Overweight { color: var(--buy); }
   .history-item .h-rating.Hold { color: var(--hold); }
   .history-item .h-rating.Underweight, .history-item .h-rating.Sell { color: var(--sell); }
+  .history-item.current { border-left: 2px solid var(--accent); padding-left: 10px; margin-left: -12px; }
   .history-item.current .h-date { color: var(--accent); font-weight: 600; }
 
   .glance {
