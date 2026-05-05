@@ -10,27 +10,27 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root {
-    /* Stripe × Bridgewater palette — the most-imitated fintech design
-       system in the world (Stripe's Downriver + Indigo + Söhne) applied to
-       Bridgewater Daily Observations style editorial content. Pure white
-       ground, slate-blue text gives a subtle financial-tech tint over
-       neutral grey, and a single Stripe-indigo accent used sparingly. */
-    --bg:           #ffffff;
-    --paper:        #ffffff;
-    --paper-2:      #f6f9fc;        /* Stripe "Black Squeeze" — subtle blue-tinted off-white */
+    /* Stripe × Bridgewater palette, warmed for sustained reading.
+       Stripe's Downriver slate-blue ink and Indigo accent are preserved
+       (they're what makes the system recognisable), but the white ground
+       is replaced with a gentle warm off-white that's easier on the eye
+       across long research reports. */
+    --bg:           #fbf9f4;        /* gentle warm off-white */
+    --paper:        #fdfcf8;        /* card/panel surface — slightly lighter */
+    --paper-2:      #f3eee2;        /* warm hover/code tint */
     --ink:          #0a2540;        /* Stripe "Downriver" — slate-blue near-black */
     --ink-soft:     #425466;        /* Stripe muted slate */
     --ink-mid:      #697386;
-    --ink-faint:    #a3acb9;
-    --rule:         #e3e8ee;        /* Stripe rule line */
-    --rule-strong:  #c1c9d2;
+    --ink-faint:    #a89e8a;        /* warm-tinted faint */
+    --rule:         #e7e1d2;        /* warm rule */
+    --rule-strong:  #cdc5b0;
     --accent:       #635bff;        /* Stripe Indigo — the only chrome colour */
     --accent-soft:  #efeefd;
 
-    /* Rating colours: tuned for the Stripe palette */
-    --buy:    #008556;
-    --hold:   #b56b1a;
-    --sell:   #cd3d3d;
+    /* Rating colours: tuned for the warmed palette */
+    --buy:    #00794d;
+    --hold:   #a5651a;
+    --sell:   #c83838;
 
     --serif: "Source Serif 4", "Noto Serif SC", "Charter", "Songti SC", "STSong", Georgia, serif;
     --sans:  "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
