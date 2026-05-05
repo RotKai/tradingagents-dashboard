@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TradingAgents · Daily Coverage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    /* Restrained editorial palette — pure off-white + near-black + single navy accent */
+    --bg:           #fbfaf6;
+    --paper:        #ffffff;
+    --ink:          #1a1a1a;
+    --ink-soft:     #3d3d3d;
+    --ink-mid:      #6a6a6a;
+    --ink-faint:    #9a9a9a;
+    --rule:         #ebe8df;
+    --rule-strong:  #cdc8b8;
+    --accent:       #2d4860;        /* deep desaturated navy — the only chrome colour */
+    --accent-soft:  #e8edf3;
+
+    /* Rating colours: muted, single-tone */
+    --buy:    #1f5e3f;
+    --hold:   #7a5a14;
+    --sell:   #8a2424;
+
+    --serif: "Source Serif 4", "Noto Serif SC", "Charter", "Songti SC", "STSong", Georgia, serif;
+    --sans:  "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    --mono:  "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "calt";
+  }
+  a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  a:hover { color: var(--accent); border-bottom-color: currentColor; }
+
+  /* ===== Site header (minimal) ===== */
+  .site-header {
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .site-header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 22px 32px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .pub-name {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .pub-name a { color: var(--ink); border-bottom: none; }
+  .pub-name a:hover { color: var(--accent); border-bottom: none; }
+  .pub-name .sub {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-mid);
+    margin-left: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  .views-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-mid);
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+  }
+  .views-mini .count { color: var(--ink); font-weight: 500; }
+  select {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--rule-strong);
+    border-radius: 2px;
+    padding: 5px 9px;
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  select:hover { border-color: var(--accent); }
+  .lang-toggle {
+    display: inline-flex;
+    border: 1px solid var(--rule-strong);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .lang-toggle button {
+    background: transparent;
+    color: var(--ink-mid);
+    border: none;
+    border-right: 1px solid var(--rule-strong);
+    padding: 5px 11px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .lang-toggle button:last-child { border-right: none; }
+  .lang-toggle button.active { background: var(--ink); color: var(--paper); }
+
+  /* ===== Page container ===== */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+  .breadcrumb {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-mid);
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+  .breadcrumb a {
+    color: var(--ink-mid);
+    border-bottom: none;
+  }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb .sep { color: var(--ink-faint); margin: 0 8px; }
+
+  /* ===== Home: title block ===== */
+  .home-title {
+    margin-bottom: 12px;
+    max-width: 760px;
+  }
+  .home-title .eyebrow {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .home-title h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 44px;
+    line-height: 1.1;
+    margin: 0 0 14px;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+  }
+  .home-title .lede {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 640px;
+  }
+  .home-title .dateline {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-mid);
+    margin-top: 18px;
+    letter-spacing: 0.01em;
+  }
+
+  /* ===== Macro callout ===== */
+  .macro-callout {
+    max-width: 720px;
+    margin: 36px 0 56px;
+    padding: 14px 0 14px 22px;
+    border-left: 2px solid var(--accent);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .macro-callout .label {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  /* ===== Section header ===== */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    margin: 56px 0 4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .section-head:first-of-type { margin-top: 8px; }
+  .section-head .section-name {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .section-head .section-count {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-mid);
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== Ticker grid ===== */
+  .ticker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 0;
+    margin-bottom: 8px;
+  }
+  .ticker-card {
+    padding: 22px 26px 22px 0;
+    cursor: pointer;
+    transition: background 0.12s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+  }
+  .ticker-card { border-bottom-style: solid; }
+  .ticker-card:hover { background: #f4f1e9; border-bottom-color: var(--rule); }
+  .ticker-card:hover { padding-left: 12px; padding-right: 14px; transition: padding 0.12s, background 0.12s; }
+  .ticker-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .ticker-card .symbol-line {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .ticker-card .symbol {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 21px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .ticker-card .company {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-mid);
+    font-size: 15px;
+    font-weight: 400;
+  }
+  .ticker-card .tagline {
+    font-family: var(--serif);
+    font-size: 15.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .rating-pill {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 3px 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-radius: 2px;
+    border: 1px solid currentColor;
+  }
+  .rating-pill.Buy, .rating-pill.Overweight { color: var(--buy); }
+  .rating-pill.Hold { color: var(--hold); }
+  .rating-pill.Underweight, .rating-pill.Sell { color: var(--sell); }
+
+  .ticker-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: auto;
+    padding-top: 6px;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    color: var(--ink-mid);
+  }
+  .ticker-card-meta .views { font-variant-numeric: tabular-nums; }
+  .ticker-card-meta .read-link {
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* ===== Detail: article header ===== */
+  .article-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 64px;
+    align-items: start;
+  }
+  @media (max-width: 920px) {
+    .article-wrap { grid-template-columns: 1fr; gap: 36px; }
+  }
+  .article-main { max-width: 720px; }
+
+  .article-header {
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .article-header .kicker {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .article-header h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 38px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+  }
+  .article-header .deck {
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 400;
+  }
+  .article-byline {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-mid);
+    margin-top: 18px;
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    letter-spacing: 0.01em;
+  }
+  .article-byline .key { color: var(--ink-faint); margin-right: 4px; }
+  .article-byline .val { color: var(--ink); font-weight: 500; }
+
+  /* ===== Stat strip ===== */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0;
+    margin: 18px 0 36px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .stat-cell {
+    padding: 14px 16px 14px 0;
+    border-right: 1px solid var(--rule);
+  }
+  .stat-cell:last-child { border-right: none; padding-right: 0; }
+  .stat-cell:not(:first-child) { padding-left: 16px; }
+  .stat-cell .label {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    color: var(--ink-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .stat-cell .value {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+
+  /* ===== Article body ===== */
+  article.body {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.78;
+    color: var(--ink);
+    hyphens: auto;
+  }
+  article.body > h1:first-child { display: none; }
+  article.body h1 {
+    font-family: var(--serif);
+    font-size: 26px;
+    margin: 44px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  article.body h2 {
+    font-family: var(--serif);
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  article.body h3 {
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin: 30px 0 10px;
+    font-weight: 600;
+  }
+  article.body p { margin: 16px 0; }
+  article.body strong { font-weight: 600; color: var(--ink); }
+  article.body em { font-style: italic; }
+  article.body code {
+    font-family: var(--mono);
+    font-size: 14.5px;
+    background: #f0ece1;
+    padding: 1px 5px;
+    border-radius: 1px;
+  }
+  article.body blockquote {
+    margin: 24px 0;
+    padding: 4px 0 4px 20px;
+    border-left: 2px solid var(--accent);
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  article.body hr { border: none; border-top: 1px solid var(--rule); margin: 36px 0; }
+  article.body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 22px 0;
+    font-family: var(--sans);
+    font-size: 13.5px;
+  }
+  article.body th, article.body td {
+    border-bottom: 1px solid var(--rule);
+    padding: 10px 14px 10px 0;
+    text-align: left;
+  }
+  article.body th { font-weight: 600; color: var(--ink); border-bottom: 2px solid var(--ink); }
+  article.body ul, article.body ol { padding-left: 24px; margin: 16px 0; }
+  article.body li { margin: 6px 0; }
+
+  /* ===== Sidebar ===== */
+  aside.sidebar {
+    position: sticky;
+    top: 28px;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  aside.sidebar .panel { margin-bottom: 32px; }
+  aside.sidebar .panel-head {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--ink);
+    font-weight: 600;
+  }
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px dotted var(--rule-strong);
+    gap: 10px;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-item .h-date {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .history-item a.h-date { color: var(--ink); border-bottom: none; }
+  .history-item a.h-date:hover { color: var(--accent); }
+  .history-item .h-rating {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+  }
+  .history-item .h-rating.Buy, .history-item .h-rating.Overweight { color: var(--buy); }
+  .history-item .h-rating.Hold { color: var(--hold); }
+  .history-item .h-rating.Underweight, .history-item .h-rating.Sell { color: var(--sell); }
+  .history-item.current .h-date { color: var(--accent); font-weight: 600; }
+
+  .glance {
+    font-family: var(--serif);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .glance .gl-label {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .glance > div { margin-bottom: 14px; }
+  .glance > div:last-child { margin-bottom: 0; }
+
+  /* ===== Footer ===== */
+  .site-footer {
+    margin-top: 96px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-mid);
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+  .site-footer .accent { color: var(--accent); }
+  .site-footer .colophon {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--ink-mid);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  .empty-state {
+    background: var(--paper);
+    border: 1px dashed var(--rule-strong);
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--ink-faint);
+    font-family: var(--sans);
+  }
+
+  @media (max-width: 720px) {
+    .home-title h1 { font-size: 32px; }
+    .article-header h1 { font-size: 28px; }
+    main { padding: 32px 18px; }
+    .ticker-grid { grid-template-columns: 1fr; }
+    .ticker-card { padding-right: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="pub-name">
+      <a href="#/">TradingAgents</a>
+      <span class="sub" id="header-sub">Daily Coverage</span>
+    </div>
+    <div class="controls">
+      <span class="views-mini" title="Total page views">
+        <span id="views-label">Views</span>
+        <span class="count" id="view-count">…</span>
+      </span>
+      <select id="date-select" aria-label="Date"></select>
+      <span class="lang-toggle" role="group" aria-label="Language">
+        <button data-lang="en" class="active" id="btn-en">EN</button>
+        <button data-lang="zh" id="btn-zh">中文</button>
+      </span>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var I18N = {
+    en: {
+      headerSub: "Daily Coverage",
+      home: {
+        eyebrow: "The Daily Brief",
+        h1: "Today's coverage at a glance.",
+        lede: "An evidence-first read of every name in our universe, organised by sector. Each call carries an explicit rating, time horizon, and the single risk that would invalidate it.",
+        macroLabel: "Today's Tape",
+        readMore: "Read analysis",
+        viewsLabel: "views",
+        countSuffix: function (n) { return n + (n === 1 ? " name" : " names"); },
+        backHome: "All coverage"
+      },
+      detail: {
+        backHome: "All coverage",
+        rating: "Rating",
+        action: "Action today",
+        horizon: "Time horizon",
+        keyRisk: "Key risk",
+        history: "Decision history",
+        sidebarMeta: "At a glance",
+        currentTag: "Today",
+        publishedOn: "Published"
+      },
+      footer: 'TradingAgents · No PII collected · Counts via <span class="accent">abacus.jasoncameron.dev</span>',
+      colophon: "Set in Source Serif 4 and Inter. Self-contained static publication, eleven-agent framework in self-LLM mode.",
+      noData: "No reports for this date yet.",
+      formatDate: function (d) {
+        var date = new Date(d + "T00:00:00");
+        return date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      },
+      viewsTitle: "Views"
+    },
+    zh: {
+      headerSub: "每日覆盖",
+      home: {
+        eyebrow: "每日简报",
+        h1: "当日覆盖一览。",
+        lede: "对覆盖范围内每只票的证据优先解读，按板块分组。每条意见都附明确的评级、时间窗口，以及那条会推翻论据的核心风险。",
+        macroLabel: "当日盘面",
+        readMore: "阅读分析",
+        viewsLabel: "次浏览",
+        countSuffix: function (n) { return n + " 只"; },
+        backHome: "覆盖目录"
+      },
+      detail: {
+        backHome: "覆盖目录",
+        rating: "评级",
+        action: "今日动作",
+        horizon: "时间窗口",
+        keyRisk: "核心风险",
+        history: "历史决策",
+        sidebarMeta: "概览",
+        currentTag: "本期",
+        publishedOn: "发布"
+      },
+      footer: 'TradingAgents · 不收集任何身份信息 · 计数走 <span class="accent">abacus.jasoncameron.dev</span>',
+      colophon: "正文采用 Source Serif 4 与思源宋体，sans 用 Inter 与思源黑体。本地自包含静态出版物，十一智能体框架 self-LLM 模式。",
+      noData: "该日期暂无报告。",
+      formatDate: function (d) {
+        var date = new Date(d + "T00:00:00");
+        var w = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"][date.getDay()];
+        return date.getFullYear() + " 年 " + (date.getMonth() + 1) + " 月 " + date.getDate() + " 日 · " + w;
+      },
+      viewsTitle: "总浏览"
+    }
+  };
+
+  // ----- Counter (abacus, no PII, no cookies) -----
+  var ANALYTICS_NS = "tradingagents-dashboard";
+  var ANALYTICS_BASE = "https://abacus.jasoncameron.dev";
+  var viewCache = {};
+  function fmtN(n) { return n == null || isNaN(n) ? "—" : n.toLocaleString(); }
+  function bumpCounter(key, el) {
+    return fetch(ANALYTICS_BASE + "/hit/" + encodeURIComponent(ANALYTICS_NS) + "/" + encodeURIComponent(key), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || typeof d.value !== "number") return null;
+        viewCache[key] = d.value;
+        if (el) el.textContent = fmtN(d.value);
+        return d.value;
+      })
+      .catch(function () { return null; });
+  }
+  function getCounter(key) {
+    return fetch(ANALYTICS_BASE + "/get/" + encodeURIComponent(ANALYTICS_NS) + "/" + encodeURIComponent(key), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (!d || typeof d.value !== "number") return null; viewCache[key] = d.value; return d.value; })
+      .catch(function () { return null; });
+  }
+
+  // ----- State -----
+  var data = window.REPORTS_DATA || {};
+  var CATEGORIES = window.CATEGORIES || {};
+  var state = { lang: localStorage.getItem("ta_lang") || "en", date: null, ticker: null };
+
+  function dates() { return Object.keys(data).sort().reverse(); }
+  function tickerDates(t) { return dates().filter(function (d) { return data[d] && data[d].tickers && data[d].tickers[t]; }); }
+
+  function parseRoute() {
+    var raw = (location.hash || "").replace(/^#\/?/, "");
+    if (!raw) return { view: "home" };
+    var parts = raw.split("/");
+    if (parts[0] === "ticker" && parts[1]) return { view: "ticker", ticker: parts[1].toUpperCase(), date: parts[2] || null };
+    return { view: "home" };
+  }
+
+  function applyChrome() {
+    document.getElementById("btn-en").classList.toggle("active", state.lang === "en");
+    document.getElementById("btn-zh").classList.toggle("active", state.lang === "zh");
+    document.documentElement.lang = state.lang === "zh" ? "zh-CN" : "en";
+    document.getElementById("header-sub").textContent = I18N[state.lang].headerSub;
+    document.getElementById("views-label").textContent = I18N[state.lang].viewsTitle;
+  }
+
+  function buildDateSelect() {
+    var sel = document.getElementById("date-select");
+    sel.innerHTML = "";
+    dates().forEach(function (d) {
+      var o = document.createElement("option");
+      o.value = d; o.textContent = d;
+      sel.appendChild(o);
+    });
+    if (state.date) sel.value = state.date;
+  }
+
+  // ----- Home -----
+  function renderHome() {
+    var app = document.getElementById("app");
+    var entry = data[state.date];
+    if (!entry) { app.innerHTML = '<div class="empty-state">' + I18N[state.lang].noData + '</div>'; return; }
+
+    var html = "";
+    html += '<div class="home-title">';
+    html += '  <div class="eyebrow">' + I18N[state.lang].home.eyebrow + '</div>';
+    html += '  <h1>' + I18N[state.lang].home.h1 + '</h1>';
+    html += '  <p class="lede">' + I18N[state.lang].home.lede + '</p>';
+    html += '  <div class="dateline">' + I18N[state.lang].formatDate(state.date) + '</div>';
+    html += '</div>';
+
+    var macro = entry.macro && entry.macro[state.lang];
+    if (macro) {
+      html += '<div class="macro-callout">';
+      html += '  <span class="label">' + I18N[state.lang].home.macroLabel + '</span>';
+      html += escapeHtml(macro);
+      html += '</div>';
+    }
+
+    // Group by category
+    var groups = {};
+    var tickers = Object.keys(entry.tickers || {});
+    tickers.forEach(function (t) {
+      var cat = entry.tickers[t].category || "other";
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(t);
+    });
+    var orderedCats = Object.keys(groups).sort(function (a, b) {
+      var oa = (CATEGORIES[a] && CATEGORIES[a].order) || 99;
+      var ob = (CATEGORIES[b] && CATEGORIES[b].order) || 99;
+      return oa - ob;
+    });
+
+    orderedCats.forEach(function (cat) {
+      var ts = groups[cat];
+      var label = (CATEGORIES[cat] && CATEGORIES[cat][state.lang]) || cat;
+      html += '<div class="section-head">';
+      html += '  <span class="section-name">' + label + '</span>';
+      html += '  <span class="section-count">' + I18N[state.lang].home.countSuffix(ts.length) + '</span>';
+      html += '</div>';
+      html += '<div class="ticker-grid">';
+      ts.forEach(function (t) {
+        var tk = entry.tickers[t];
+        var rating = tk.rating || "";
+        var company = (tk.title && tk.title[state.lang]) || "";
+        var tagline = (tk.tagline && tk.tagline[state.lang]) || "";
+        var viewsKey = "ticker-" + t;
+        var cached = viewCache[viewsKey];
+        html += '<a class="ticker-card" href="#/ticker/' + t + '">';
+        html += '  <div class="ticker-card-head">';
+        html += '    <div class="symbol-line">';
+        html += '      <span class="symbol">' + t + '</span>';
+        html += '      <span class="company">' + escapeHtml(company) + '</span>';
+        html += '    </div>';
+        html += '    <span class="rating-pill ' + rating + '">' + rating + '</span>';
+        html += '  </div>';
+        html += '  <div class="tagline">' + escapeHtml(tagline) + '</div>';
+        html += '  <div class="ticker-card-meta">';
+        html += '    <span class="views" data-views-key="' + viewsKey + '">' + (cached != null ? fmtN(cached) + " " + I18N[state.lang].home.viewsLabel : "") + '</span>';
+        html += '    <span class="read-link">' + I18N[state.lang].home.readMore + ' →</span>';
+        html += '  </div>';
+        html += '</a>';
+      });
+      html += '</div>';
+    });
+
+    html += '<div class="site-footer">';
+    html += '  <div>' + I18N[state.lang].footer + '</div>';
+    html += '  <div class="colophon">' + I18N[state.lang].colophon + '</div>';
+    html += '</div>';
+    app.innerHTML = html;
+
+    tickers.forEach(function (t) {
+      var key = "ticker-" + t;
+      if (viewCache[key] == null) {
+        getCounter(key).then(function () {
+          var span = app.querySelector('[data-views-key="' + key + '"]');
+          if (span && viewCache[key] != null) span.textContent = fmtN(viewCache[key]) + " " + I18N[state.lang].home.viewsLabel;
+        });
+      }
+    });
+  }
+
+  // ----- Detail -----
+  function renderDetail(ticker, dateOverride) {
+    var app = document.getElementById("app");
+    var date = dateOverride || state.date;
+    var entry = data[date];
+    var tk = entry && entry.tickers && entry.tickers[ticker];
+    if (!tk) { app.innerHTML = '<div class="empty-state">' + I18N[state.lang].noData + '</div>'; return; }
+
+    var rating = tk.rating || "";
+    var company = (tk.title && tk.title[state.lang]) || "";
+    var deck = (tk.tagline && tk.tagline[state.lang]) || "";
+    var actionVal = (tk.action && tk.action[state.lang]) || "—";
+    var horizonVal = (tk.horizon && tk.horizon[state.lang]) || "—";
+    var riskVal = (tk.keyRisk && tk.keyRisk[state.lang]) || "—";
+    var bodyMd = (tk.body && tk.body[state.lang]) || "";
+    var catKey = tk.category;
+    var catLabel = catKey && CATEGORIES[catKey] ? CATEGORIES[catKey][state.lang] : "";
+
+    var html = "";
+    html += '<div class="breadcrumb"><a href="#/">' + I18N[state.lang].detail.backHome + '</a><span class="sep">/</span><span>' + (catLabel || date) + '</span><span class="sep">/</span><span>' + ticker + '</span></div>';
+
+    html += '<div class="article-wrap">';
+    html += '<div class="article-main">';
+    html += '  <header class="article-header">';
+    if (catLabel) html += '    <div class="kicker">' + ticker + ' · ' + catLabel + '</div>';
+    else html += '    <div class="kicker">' + ticker + '</div>';
+    html += '    <h1>' + escapeHtml(company || ticker) + '</h1>';
+    html += '    <p class="deck">' + escapeHtml(deck) + '</p>';
+    html += '    <div class="article-byline">';
+    html += '      <span><span class="key">' + I18N[state.lang].detail.publishedOn + '</span><span class="val">' + I18N[state.lang].formatDate(date) + '</span></span>';
+    html += '      <span><span class="key">' + I18N[state.lang].detail.rating + '</span><span class="val">' + rating + '</span></span>';
+    html += '      <span><span class="key">' + I18N[state.lang].detail.horizon + '</span><span class="val">' + escapeHtml(horizonVal) + '</span></span>';
+    html += '    </div>';
+    html += '  </header>';
+
+    html += '  <div class="stat-strip">';
+    html += '    <div class="stat-cell"><div class="label">' + I18N[state.lang].detail.rating + '</div><div class="value"><span class="rating-pill ' + rating + '">' + rating + '</span></div></div>';
+    html += '    <div class="stat-cell"><div class="label">' + I18N[state.lang].detail.action + '</div><div class="value">' + escapeHtml(actionVal) + '</div></div>';
+    html += '    <div class="stat-cell"><div class="label">' + I18N[state.lang].detail.horizon + '</div><div class="value">' + escapeHtml(horizonVal) + '</div></div>';
+    html += '    <div class="stat-cell"><div class="label">' + I18N[state.lang].detail.keyRisk + '</div><div class="value">' + escapeHtml(riskVal) + '</div></div>';
+    html += '  </div>';
+
+    html += '  <article class="body" id="article-body"></article>';
+    html += '</div>';
+
+    html += '<aside class="sidebar">';
+    var hist = tickerDates(ticker);
+    html += '  <div class="panel">';
+    html += '    <div class="panel-head">' + I18N[state.lang].detail.history + '</div>';
+    if (hist.length === 0) {
+      html += '<div style="color: var(--ink-faint); font-size:13px; padding: 8px 0;">—</div>';
+    } else {
+      hist.forEach(function (d) {
+        var t2 = data[d].tickers[ticker];
+        var r = t2.rating || "";
+        var current = (d === date);
+        html += '<div class="history-item' + (current ? ' current' : '') + '">';
+        if (current) {
+          html += '  <span class="h-date">' + d + ' · ' + I18N[state.lang].detail.currentTag + '</span>';
+          html += '  <span class="h-rating ' + r + '">' + r + '</span>';
+        } else {
+          html += '  <a class="h-date" href="#/ticker/' + ticker + '/' + d + '">' + d + '</a>';
+          html += '  <span class="h-rating ' + r + '">' + r + '</span>';
+        }
+        html += '</div>';
+      });
+    }
+    html += '  </div>';
+
+    html += '  <div class="panel">';
+    html += '    <div class="panel-head">' + I18N[state.lang].detail.sidebarMeta + '</div>';
+    html += '    <div class="glance">';
+    html += '      <div><span class="gl-label">' + I18N[state.lang].detail.action + '</span>' + escapeHtml(actionVal) + '</div>';
+    html += '      <div><span class="gl-label">' + I18N[state.lang].detail.keyRisk + '</span>' + escapeHtml(riskVal) + '</div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '</aside>';
+
+    html += '</div>';
+
+    html += '<div class="site-footer">';
+    html += '  <div>' + I18N[state.lang].footer + '</div>';
+    html += '  <div class="colophon">' + I18N[state.lang].colophon + '</div>';
+    html += '</div>';
+    app.innerHTML = html;
+
+    var bodyEl = document.getElementById("article-body");
+    if (bodyMd && window.marked && marked.parse) bodyEl.innerHTML = marked.parse(bodyMd);
+    else if (bodyMd) bodyEl.textContent = bodyMd;
+    else bodyEl.innerHTML = '<div class="empty-state">' + I18N[state.lang].noData + '</div>';
+
+    bumpCounter("ticker-" + ticker);
+  }
+
+  function render() {
+    applyChrome();
+    var route = parseRoute();
+    if (route.view === "ticker") renderDetail(route.ticker, route.date);
+    else renderHome();
+  }
+
+  function escapeHtml(s) {
+    if (s == null) return "";
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function init() {
+    if (!Object.keys(data).length) {
+      document.getElementById("app").innerHTML = '<div class="empty-state">No data file loaded. Make sure data.js exists alongside index.html.</div>';
+      return;
+    }
+    if (window.marked && marked.setOptions) marked.setOptions({ breaks: true, gfm: true });
+
+    var ds = dates();
+    if (ds.length) state.date = ds[0];
+
+    buildDateSelect();
+    document.getElementById("date-select").addEventListener("change", function (e) {
+      state.date = e.target.value;
+      var route = parseRoute();
+      if (route.view === "ticker") {
+        if (location.hash === "#/ticker/" + route.ticker + "/" + state.date) render();
+        else location.hash = "#/ticker/" + route.ticker + "/" + state.date;
+      } else { render(); }
+      bumpCounter("date-" + state.date);
+    });
+    document.getElementById("btn-en").addEventListener("click", function () { state.lang = "en"; localStorage.setItem("ta_lang", "en"); render(); });
+    document.getElementById("btn-zh").addEventListener("click", function () { state.lang = "zh"; localStorage.setItem("ta_lang", "zh"); render(); });
+    window.addEventListener("hashchange", function () {
+      var route = parseRoute();
+      if (route.view === "ticker" && route.date) state.date = route.date;
+      render();
+      window.scrollTo({ top: 0 });
+    });
+
+    render();
+    bumpCounter("total", document.getElementById("view-count"));
+    if (state.date) bumpCounter("date-" + state.date);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+
+</body>
+</html>
