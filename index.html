@@ -10,25 +10,27 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root {
-    /* Institutional palette — BlackRock / Jane Street school.
-       Pure white ground. Near-black type. A single restrained coral accent
-       used very sparingly. Whitespace and type carry the weight, not colour. */
+    /* Stripe × Bridgewater palette — the most-imitated fintech design
+       system in the world (Stripe's Downriver + Indigo + Söhne) applied to
+       Bridgewater Daily Observations style editorial content. Pure white
+       ground, slate-blue text gives a subtle financial-tech tint over
+       neutral grey, and a single Stripe-indigo accent used sparingly. */
     --bg:           #ffffff;
     --paper:        #ffffff;
-    --paper-2:      #f6f5f3;        /* subtle hover / code tint */
-    --ink:          #0a0a0a;        /* near-black, slightly softened from #000 */
-    --ink-soft:     #2a2a2a;
-    --ink-mid:      #555555;
-    --ink-faint:    #8a8a8a;
-    --rule:         #e8e8e6;
-    --rule-strong:  #c4c4c2;
-    --accent:       #d8442a;        /* coral red, JS-tinted but a touch deeper */
-    --accent-soft:  #fbeae5;
+    --paper-2:      #f6f9fc;        /* Stripe "Black Squeeze" — subtle blue-tinted off-white */
+    --ink:          #0a2540;        /* Stripe "Downriver" — slate-blue near-black */
+    --ink-soft:     #425466;        /* Stripe muted slate */
+    --ink-mid:      #697386;
+    --ink-faint:    #a3acb9;
+    --rule:         #e3e8ee;        /* Stripe rule line */
+    --rule-strong:  #c1c9d2;
+    --accent:       #635bff;        /* Stripe Indigo — the only chrome colour */
+    --accent-soft:  #efeefd;
 
-    /* Rating colours: institutional, deeper saturations */
-    --buy:    #14543a;
-    --hold:   #6d4d10;
-    --sell:   #a8281c;
+    /* Rating colours: tuned for the Stripe palette */
+    --buy:    #008556;
+    --hold:   #b56b1a;
+    --sell:   #cd3d3d;
 
     --serif: "Source Serif 4", "Noto Serif SC", "Charter", "Songti SC", "STSong", Georgia, serif;
     --sans:  "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
@@ -40,20 +42,24 @@
     padding: 0;
     background: var(--bg);
     color: var(--ink);
-    font-family: var(--serif);
-    font-size: 18px;
-    line-height: 1.72;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: "kern", "liga", "calt";
   }
   a {
-    color: var(--ink);
+    color: var(--accent);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.15s, color 0.15s;
+    transition: color 0.15s, opacity 0.15s;
   }
-  a:hover { color: var(--accent); border-bottom-color: currentColor; }
+  a:hover { opacity: 0.7; }
+  /* Headers and brand keep ink colour; only inline links and chrome use indigo */
+  .pub-name a, .breadcrumb a, .ticker-card, .ticker-card *, .history-item a {
+    color: inherit;
+  }
+  .pub-name a:hover { color: var(--accent); opacity: 1; }
 
   /* ===== Site header (minimal) ===== */
   .site-header {
@@ -71,9 +77,9 @@
     flex-wrap: wrap;
   }
   .pub-name {
-    font-family: var(--serif);
-    font-size: 22px;
-    font-weight: 600;
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--ink);
   }
@@ -172,21 +178,23 @@
     font-weight: 600;
   }
   .home-title h1 {
-    font-family: var(--serif);
-    font-weight: 600;
-    font-size: 52px;
-    line-height: 1.05;
-    margin: 0 0 18px;
-    letter-spacing: -0.022em;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 1.04;
+    margin: 0 0 20px;
+    letter-spacing: -0.028em;
     color: var(--ink);
   }
   .home-title .lede {
-    font-family: var(--serif);
-    font-size: 20px;
-    line-height: 1.52;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.5;
     color: var(--ink-soft);
     margin: 0;
     max-width: 660px;
+    letter-spacing: -0.005em;
   }
   .home-title .dateline {
     font-family: var(--sans);
@@ -202,10 +210,11 @@
     margin: 36px 0 56px;
     padding: 14px 0 14px 22px;
     border-left: 2px solid var(--accent);
-    font-family: var(--serif);
-    font-size: 17px;
+    font-family: var(--sans);
+    font-size: 15px;
     line-height: 1.6;
     color: var(--ink-soft);
+    letter-spacing: -0.003em;
   }
   .macro-callout .label {
     display: block;
@@ -230,11 +239,12 @@
   }
   .section-head:first-of-type { margin-top: 8px; }
   .section-head .section-name {
-    font-family: var(--serif);
-    font-size: 22px;
+    font-family: var(--sans);
+    font-size: 14px;
     font-weight: 600;
     color: var(--ink);
-    letter-spacing: -0.01em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   .section-head .section-count {
     font-family: var(--sans);
@@ -286,24 +296,25 @@
     gap: 12px;
   }
   .ticker-card .symbol {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 700;
-    font-size: 21px;
+    font-size: 20px;
     color: var(--ink);
     letter-spacing: -0.01em;
   }
   .ticker-card .company {
-    font-family: var(--serif);
-    font-style: italic;
+    font-family: var(--sans);
+    font-weight: 500;
     color: var(--ink-mid);
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: -0.003em;
   }
   .ticker-card .tagline {
-    font-family: var(--serif);
-    font-size: 15.5px;
+    font-family: var(--sans);
+    font-size: 14.5px;
     color: var(--ink-soft);
     line-height: 1.5;
+    letter-spacing: -0.003em;
   }
   .rating-pill {
     font-family: var(--sans);
@@ -364,21 +375,22 @@
     font-weight: 600;
   }
   .article-header h1 {
-    font-family: var(--serif);
-    font-weight: 600;
-    font-size: 42px;
-    line-height: 1.12;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1.1;
     margin: 0 0 14px;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
     color: var(--ink);
   }
   .article-header .deck {
-    font-family: var(--serif);
-    font-size: 20px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 19px;
     color: var(--ink-soft);
     line-height: 1.5;
     margin: 0;
-    font-weight: 400;
+    letter-spacing: -0.005em;
   }
   .article-byline {
     font-family: var(--sans);
@@ -418,43 +430,49 @@
     font-weight: 600;
   }
   .stat-cell .value {
-    font-family: var(--serif);
-    font-size: 15px;
+    font-family: var(--sans);
+    font-size: 14px;
     color: var(--ink);
     line-height: 1.45;
+    font-weight: 500;
+    letter-spacing: -0.005em;
   }
 
   /* ===== Article body ===== */
+  /* Body stays in serif for long-form readability; chrome and headlines use
+     Inter to match the Stripe-style sans system. This hybrid is what
+     Bridgewater Daily Observations actually does. */
   article.body {
     font-family: var(--serif);
-    font-size: 18px;
-    line-height: 1.78;
+    font-size: 17.5px;
+    line-height: 1.75;
     color: var(--ink);
     hyphens: auto;
   }
   article.body > h1:first-child { display: none; }
   article.body h1 {
-    font-family: var(--serif);
-    font-size: 26px;
-    margin: 44px 0 14px;
-    padding-bottom: 6px;
+    font-family: var(--sans);
+    font-size: 22px;
+    margin: 44px 0 12px;
+    padding-bottom: 8px;
     border-bottom: 1px solid var(--rule);
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--ink);
   }
   article.body h2 {
-    font-family: var(--serif);
-    font-size: 22px;
-    margin: 36px 0 12px;
+    font-family: var(--sans);
+    font-size: 18px;
+    margin: 36px 0 10px;
     color: var(--ink);
-    font-weight: 600;
-    letter-spacing: -0.005em;
+    font-weight: 700;
+    letter-spacing: -0.012em;
   }
   article.body h3 {
     font-family: var(--sans);
-    font-size: 12px;
+    font-size: 11.5px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     color: var(--accent);
     margin: 30px 0 10px;
     font-weight: 600;
@@ -544,10 +562,11 @@
   .history-item.current .h-date { color: var(--accent); font-weight: 600; }
 
   .glance {
-    font-family: var(--serif);
-    font-size: 14.5px;
+    font-family: var(--sans);
+    font-size: 13.5px;
     line-height: 1.55;
     color: var(--ink-soft);
+    letter-spacing: -0.003em;
   }
   .glance .gl-label {
     font-family: var(--sans);
@@ -575,12 +594,12 @@
   }
   .site-footer .accent { color: var(--accent); }
   .site-footer .colophon {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 13.5px;
+    font-family: var(--sans);
+    font-size: 12px;
     color: var(--ink-mid);
     margin-top: 8px;
     line-height: 1.6;
+    letter-spacing: -0.003em;
   }
 
   .empty-state {
