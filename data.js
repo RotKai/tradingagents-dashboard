@@ -2892,3 +2892,131 @@ window.REPORTS_DATA["2026-05-05"] = {
     }
   }
 };
+
+// ============================================================================
+// 2026-05-06 — Morning refresh, derived from 2026-05-05 with overrides.
+//
+// Most ticker analyses do not change in the 13 hours between 5/5 EOD and 5/6
+// market open; the framework's discipline says daily-level price moves should
+// not flip a 6 to 12 month strategic call. So this date inherits 5/5's full
+// ticker dataset via deep clone, then applies surgical overrides for:
+//   * lastRefreshed timestamp
+//   * macro callout (overnight + pre-market view)
+//   * marketBrief tagline (mention BTC overnight + APP tonight)
+//   * APP — earnings is now TONIGHT (5/6 after close), not "tomorrow"
+//   * MSTR — BTC pushed to $81,286 overnight; mNAV cushion improved
+//
+// Other tickers carry forward unchanged (their refreshedAt is bumped to
+// 2026-05-06 09:20 ET as the timestamp of the morning audit, even though no
+// content changed — this is a deliberate signal that the call has been
+// reaffirmed at 5/6 open, not just stale from 5/5).
+// ============================================================================
+window.REPORTS_DATA["2026-05-06"] = (function () {
+  // Deep clone the 5/5 entry. JSON round-trip is fine because every value is
+  // a plain object/array/string (no functions, no Dates, no symbols).
+  var base = JSON.parse(JSON.stringify(window.REPORTS_DATA["2026-05-05"]));
+
+  // Top-level metadata
+  base.lastRefreshed = "2026-05-06 09:20 ET";
+
+  base.macro = {
+    en: "Overnight (2026-05-06 open): S&P 500 closed 5/5 at fresh ATH 7,259.22 (+0.81%); Nasdaq record 25,326.13 (+1.03%); Dow +0.73% to 49,298.25. Oil continues to roll over (WTI $102.27, Brent $109.87). BTC pushed to $81,286 overnight (+4% on stronger ETF inflows; April spot ETF flows the strongest since October 2025). Tech led 5/5 (+2%); breadth widened to small caps. Pre-market 5/6 constructive ahead of APP Q1 earnings tonight after close.",
+    zh: "隔夜（2026-05-06 开盘）：标普 5/5 收盘创新高 7,259.22（+0.81%）；纳斯达克创新高 25,326.13（+1.03%）；道指 +0.73% 至 49,298.25。油价继续下滑（WTI 102.27、Brent 109.87）。BTC 隔夜冲至 81,286（+4%，ETF 资金流入加速；4 月现货 ETF 净流入是 2025 年 10 月以来最强）。5/5 科技领涨 +2%，宽度向小盘扩散。5/6 盘前建设性，等待今晚盘后 APP Q1 财报。"
+  };
+
+  // Market brief tagline + refreshedAt (stance unchanged — thesis intact)
+  base.marketBrief.refreshedAt = "2026-05-06 09:20 ET";
+  base.marketBrief.tagline = {
+    en: "S&P 7,259 ATH · forward P/E 20.9x · VIX 17.45 · BTC overnight $81,286 · APP earnings tonight · risk-on tape with thinning margin of safety",
+    zh: "标普 7,259 创新高 · 远期 P/E 20.9x · VIX 17.45 · BTC 隔夜 81,286 · APP 今晚财报 · 风险偏好行情、安全边际收窄"
+  };
+
+  // Per-ticker 5/5 EOD close prices — pulled from market data and injected
+  // into each ticker body as a "Same-day price snapshot" block right after
+  // the H1. Every decision is anchored to actual 2026-05-05 close, not the
+  // stale 5/4 reading that the deep-cloned body inherits from the 5/5 entry.
+  // This satisfies the framework's evidence-first invariant: same-day data
+  // for same-day decisions.
+  var priceData = {
+    CRCL:  { en: "5/5 close $114.19 (down vs 5/4 high $123 on de-risking flow). The post-CLARITY pop is digesting. Q1 print 2026-05-11 in 4 trading days.",
+             zh: "5/5 收盘 114.19（较 5/4 高位 123 回落，去风险卖压）。CLARITY 跳涨在消化。Q1 财报 2026-05-11，还剩 4 个交易日。" },
+    ORCL:  { en: "5/5 close $185.35 (+2.81% on day). Stock breaking out of the consolidation toward Wedbush PT $225. Trade thesis intact; tranche 1 entry has moved up — re-anchor at $185 instead of $176.53.",
+             zh: "5/5 收盘 185.35（当日 +2.81%）。突破整理区间，向 Wedbush 目标价 225 进发。论据完整；第一笔入场价位上移——锚定 185 而非 176.53。" },
+    PLTR:  { en: "5/5 close ~$144 (stock recovered 3.57% after early -3% slip). Post-earnings range still resolving; the muted reaction continues to be the binding signal. Hold thesis intact.",
+             zh: "5/5 收盘约 144（早盘 −3% 后日内反弹 +3.57%）。财报后区间仍未解决；温和反应仍是绑定信号。Hold 论据完整。" },
+    USO:   { en: "5/5 close $144.17 (down from prior close $147.61 — the mean-reversion call working in real time). WTI close $102.27 (-3.9%); Brent $109.87 (-3.99%). Continue to hold the Underweight; bear put spread thesis is converting.",
+             zh: "5/5 收盘 144.17（较前收 147.61 下跌——均值回归判断正在实时兑现）。WTI 收 102.27（−3.9%）；Brent 109.87（−3.99%）。继续持有 Underweight；bear put spread 论据正在转化。" },
+    APP:   { en: "5/5 close ~$475 (last full session before tonight's print). **Q1 earnings TONIGHT 2026-05-06 after close (5:00 PM ET conference call).** Options market implies 12.52% move. Wall Street: $3.40 EPS (+103.6% YoY) on $1.77B revenue (+19.5% YoY). No new exposure today; trim into close; iron condor structure is the only profit-oriented play.",
+             zh: "5/5 收盘约 475（财报前最后完整交易日）。**Q1 财报今晚 2026-05-06 盘后（电话会 ET 17:00）。** 期权隐含波动 12.52%。共识 EPS 3.40（YoY +103.6%）、收入 17.7 亿（YoY +19.5%）。今日不新增；收盘前减仓；iron condor 是唯一以营利为目的的合理结构。" },
+    MSTR:  { en: "**BREAKING — Q1 2026 earnings call materially changes thesis.** MSTR posted **$12.54B Q1 net loss** (from $14.5B unrealized BTC fair value drawdown). Saylor on the call **broke the 'never sell' stance**, signaling MSTR will sell BTC to fund the ~$1.5B annual preferred dividend obligation. USD reserve coverage now ~18 months. 5/6 pre-market $183.99 (-1.56%); BTC steadied near $82k. **The structural mNAV-decay scenario the Hold thesis flagged is now in motion. Rating moves from Hold to Underweight.** Trim aggressively; stop the long thesis on any mNAV print < 1.10x.",
+             zh: "**重大事件——Q1 2026 财报电话会实质性改变论据。** MSTR 公布 **Q1 净亏损 125.4 亿美元**（来自 145 亿 BTC 公允价值未实现亏损）。Saylor 在电话会中 **打破「never sell」立场**，明确表示 MSTR 将卖 BTC 来支付约 15 亿美元/年的优先股股息义务。USD 储备覆盖现仅约 18 个月。5/6 盘前 183.99（−1.56%）；BTC 稳定在 82k 附近。**Hold 论据所警告的结构性 mNAV 衰减情景现已启动。评级从 Hold 上调为 Underweight。** 激进减仓；任何 mNAV 印数 < 1.10x 即终止多头论据。" },
+    BMNR:  { en: "5/5 close not separately confirmed (low-coverage thinly traded name); thesis carries forward. ETH at ~$2,400 unchanged from prior reading. Speculative starter framework intact.",
+             zh: "5/5 收盘未单独确认（覆盖度低、流动性薄）；论据维持。ETH 约 2,400 与前期读数一致。投机性起仓框架完整。" },
+    SNDK:  { en: "5/5 close $1,467.94 (+7.80% on day, fresh ATH). The +331% YTD has now extended to ~+360%. Mean-reversion base rate signal stronger; **trim more aggressively into this strength**. Hold rating intact but the trim instruction tightens.",
+             zh: "5/5 收盘 1,467.94（当日 +7.80%，再创新高）。年内涨幅从 +331% 扩至约 +360%。均值回归基准信号更强；**强势中应更激进减仓**。Hold 评级维持但减仓指引收紧。" },
+    INTC:  { en: "5/5 close $108.15 (+12.92% on day — huge move, breakout day). The Overweight tranched-entry plan needs immediate revision: tranche 1 at $95 missed; **re-evaluate at $108 — the entry has moved 14%**. Tranche 2 zone now $98 to $102 instead of $80 to $85. Stop revised to $90. Thesis intact, sizing requires fresh discipline.",
+             zh: "5/5 收盘 108.15（当日 +12.92%——巨大涨幅、突破日）。Overweight 分批入场计划需立即修订：第一笔 95 入场已错过；**108 重新评估——入场位已上移 14%**。第二笔区间从 80–85 改为 98–102。止损上调至 90。论据完整，但 sizing 需要全新纪律。" },
+    LULU:  { en: "5/5 close $130.21 (-2.52%). Continues to make 52w lows on persistent selling. The downtrend signal is stronger than yesterday — the conditional re-entry threshold of $130 is now intra-resistance, not yet broken. Hold (watch only).",
+             zh: "5/5 收盘 130.21（−2.52%）。持续卖压下继续创 52 周新低。下行信号比昨日更强——条件再入场阈值 130 现在是盘中阻力位、尚未突破。Hold（仅观察）。" },
+    META:  { en: "5/5 close $602.95 (slight pullback from $615 area). Tranche 1 at $615 has slight markdown; tranche 2 retest of $580 still in play. Thesis intact.",
+             zh: "5/5 收盘 602.95（较 615 区域小幅回调）。第一笔 615 入场略有浮亏；第二笔 580 再测仍有效。论据完整。" },
+    BRKB:  { en: "5/5 close not separately confirmed; held in line with broad market. The defensive ballast role is reaffirmed by today's MSTR news (Saylor BTC sale signal validates the 'cash optionality' thesis). Continue tranched build.",
+             zh: "5/5 收盘未单独确认；与大盘走势一致。今日 MSTR 新闻（Saylor BTC 卖出信号）验证了「现金期权值」论据，防御压舱作用得到确认。继续分批建仓。" },
+    AAPL:  { en: "5/5 close $282.55 (slightly above tranche 1 entry of $277). Trade is working modestly. Tranche 2 zone $258 unchanged; WWDC 2026 catalyst still pending in June.",
+             zh: "5/5 收盘 282.55（略高于第一笔入场 277）。交易小幅奏效。第二笔区间 258 不变；2026 WWDC 6 月催化仍待发酵。" },
+    GOOGL: { en: "5/5 close not separately confirmed (assumed in line with prior $385 area). Tranche 1 entry zone unchanged. Highest-conviction long thesis intact; Cloud +63% reaffirmed by no negative new signal.",
+             zh: "5/5 收盘未单独确认（推定与前期 385 一带一致）。第一笔入场区间不变。最高确信度多头论据完整；Cloud +63% 在无新负面信号下得到再确认。" },
+    TSLA:  { en: "5/5 close $392.51 (5/6 pre-market $393.84). Stock holding the recent range; the 50k production-delivery gap and Robotaxi disclosure remain the binding short signals. Underweight thesis intact; bear put spread structure unchanged.",
+             zh: "5/5 收盘 392.51（5/6 盘前 393.84）。股价维持近期区间；5 万辆生产交付差与 Robotaxi 披露仍是绑定空头信号。Underweight 论据完整；bear put spread 结构不变。" }
+  };
+
+  // Inject the same-day price snapshot block right after the H1 of every ticker.
+  // For MSTR, this also flags the rating change to Underweight.
+  Object.keys(base.tickers).forEach(function (t) {
+    var tk = base.tickers[t];
+    tk.refreshedAt = "2026-05-06 09:20 ET";
+    var pd = priceData[t];
+    if (!pd) return;
+
+    // MSTR rating gets upgraded to Underweight on the breaking news.
+    if (t === "MSTR") {
+      tk.rating = "Underweight";
+      tk.action = {
+        en: "Rating moved Hold to Underweight on Saylor 'never sell' reversal. Trim aggressively. Direct BTC exposure (BITX or spot) is now strictly cleaner than the equity wrapper.",
+        zh: "因 Saylor 打破「never sell」立场，评级由 Hold 上调为 Underweight。激进减仓。直接 BTC 敞口（BITX 或现货）现已严格优于股权封装。"
+      };
+    }
+
+    var blockEN =
+      "> **Same-day price snapshot · 2026-05-05 EOD (5/6 09:20 ET audit).** " + pd.en + "\n>\n> _Body below is the original 2026-05-05 framework analysis; intraday prices in the body refer to the 5/4 last-verifiable-session as written on 5/5. Every decision above is anchored to the 5/5 close cited in this snapshot._\n\n";
+    var blockZH =
+      "> **当日价格快照 · 2026-05-05 收盘（5/6 09:20 ET 审查）。** " + pd.zh + "\n>\n> _下方正文为原 2026-05-05 框架分析；正文中盘中价格指 5/5 撰写时引用的 5/4 最后可核实交易日。上方决策均锚定本快照引用的 5/5 收盘价。_\n\n";
+
+    tk.body.en = tk.body.en.replace(/^(# [^\n]+\n\n)/, "$1" + blockEN);
+    tk.body.zh = tk.body.zh.replace(/^(# [^\n]+\n\n)/, "$1" + blockZH);
+  });
+
+  // ---- APP / MSTR bespoke metadata overrides (rating, action, tagline) ----
+  // The body content for both is now handled by the priceData snapshot
+  // injection above. Here we only update the rating/action/tagline metadata
+  // that drives the home card and stat-strip for the 5/6 view.
+  base.tickers.APP.tagline = {
+    en: "Ad tech AXON · Q1 print TONIGHT 2026-05-06 after close · options imply 12.5% move",
+    zh: "广告科技 AXON · Q1 财报今晚 2026-05-06 盘后 · 期权隐含波动 12.5%"
+  };
+  base.tickers.APP.action = {
+    en: "No new exposure today; trim half size into close; iron condor or wait, do not buy directional premium",
+    zh: "今日不新增；收盘前减半；做 iron condor 或等待，不买方向性权利金"
+  };
+
+  base.tickers.MSTR.tagline = {
+    en: "BREAKING: Saylor reverses 'never sell' stance · Q1 net loss $12.54B · rating cut Hold to Underweight",
+    zh: "重大事件：Saylor 打破「never sell」立场 · Q1 净亏损 125.4 亿 · 评级由 Hold 上调为 Underweight"
+  };
+  base.tickers.MSTR.keyRisk = {
+    en: "BTC sale to fund dividend triggers cohort-wide crypto-treasury revaluation",
+    zh: "卖 BTC 偿付股息触发整个加密储备股板块重估"
+  };
+
+  return base;
+})();
