@@ -31,9 +31,10 @@ window.CATEGORIES = {
 };
 
 window.REPORTS_DATA["2026-05-05"] = {
+  lastRefreshed: "2026-05-05 20:15 ET",
   macro: {
-    en: "S&P 500 closed above 7,200 on 2026-04-29 (first time). Fed on hold at 3.50% to 3.75% with two more cuts expected. Hyperscaler AI capex tracking >$650B in Q1 2026 alone.",
-    zh: "标普 500 于 2026-04-29 首次收盘站上 7,200。美联储维持 3.50% 至 3.75%，预计还有两次降息。Q1 2026 单季度大型科技 AI 资本开支已破 6500 亿美元。"
+    en: "EOD update: S&P 500 +0.81% to a fresh record 7,259.22; Nasdaq +1.03% to record 25,326.13; Dow +0.73% to 49,298.25. WTI crude -3.9% to $102.27 and Brent -3.99% to $109.87 — oil rolling over from wartime peaks, validating the USO mean-reversion call. Small caps and tech led; risk-on tape. Fed on hold at 3.50% to 3.75%.",
+    zh: "收盘更新：标普 500 +0.81% 创新高至 7,259.22；纳斯达克 +1.03% 创新高至 25,326.13；道指 +0.73% 至 49,298.25。WTI 原油 −3.9% 至 102.27 美元，布伦特 −3.99% 至 109.87 美元——油价从战时峰值回落，验证 USO 均值回归判断。小盘股与科技领涨，risk-on 行情。美联储维持 3.50% 至 3.75%。"
   },
 
   summary: {
@@ -89,6 +90,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     CRCL: {
       rating: "Hold",
       category: "crypto",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Circle Internet Group", zh: "Circle Internet 集团" },
       tagline: { en: "Stablecoin issuer · pre Q1 print 2026-05-11", zh: "稳定币发行方 · Q1 财报 2026-05-11 揭晓" },
       action:  { en: "No new exposure pre print; trim half size from extended levels if held", zh: "财报前不新增；持仓者可在高位减半锁定收益" },
@@ -303,6 +305,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     ORCL: {
       rating: "Overweight",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Oracle Corporation", zh: "甲骨文公司" },
       tagline: { en: "AI cloud landlord · $553B RPO backlog", zh: "AI 云地主 · 5530 亿 RPO 在手" },
       action:  { en: "Buy tranche 1 today (1.5% to 2% NAV); add on $172 pullback; cap 5% NAV; stop $158", zh: "今日先建第一笔 1.5% 至 2% NAV；172 美元回踩加仓；总仓上限 5%；止损 158" },
@@ -525,6 +528,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     PLTR: {
       rating: "Hold",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Palantir Technologies", zh: "Palantir 科技" },
       tagline: { en: "Best in class growth, valuation the binding constraint", zh: "增速顶尖，估值是绑定约束" },
       action:  { en: "No new exposure; existing holders hold; conditional add on 200 SMA reclaim with volume", zh: "不新增；持仓者持；放量收复 200 日均线为加仓触发" },
@@ -747,6 +751,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     USO: {
       rating: "Underweight",
       category: "commodity",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "United States Oil Fund (WTI ETF)", zh: "美国石油基金（WTI ETF）" },
       tagline: { en: "WTI proxy · wartime spike +128% YoY · mean reversion debate", zh: "WTI 代理 · 战时跳涨 YoY +128% · 均值回归争论" },
       action:  { en: "No new long; trim into spike strength; consider modest short via puts only with risk discipline", zh: "不新增多头；高位减仓；用 put 做小空仓需严格风控" },
@@ -756,7 +761,7 @@ window.REPORTS_DATA["2026-05-05"] = {
         en: [
           "# USO — United States Oil Fund (WTI Crude ETF)",
           "",
-          "**Trade date:** 2026-05-05 · **Last verifiable session:** 2026-05-04/05 ~$147.26, intraday $146.63 to $147.47, prior close $142.80. 52w range $61.75 to $151.63 — i.e. price is within 3% of the 52w high.",
+          "**Trade date:** 2026-05-05 · **EOD update (20:15 ET):** **WTI crude -3.9% to $102.27, Brent -3.99% to $109.87** today on softer Iran headlines and inventory builds. USO closed lower in sympathy. **The mean-reversion thesis is starting to play out.** Pre-market session reading was ~$147.26; 52w range $61.75 to $151.63.",
           "",
           "**Macro frame.** WTI ~$105/bbl, Brent ~$114/bbl after touching $126 wartime high. Both contracts up ~60% since the 2026 Iran war began on Feb 28. The IEA has called Iran's blockade of the Strait of Hormuz the **largest geopolitical oil supply disruption in history** (2 to 3x larger than 1973 or 1990). UAE announced exit from OPEC+ effective May 1.",
           "",
@@ -842,7 +847,7 @@ window.REPORTS_DATA["2026-05-05"] = {
         zh: [
           "# USO — 美国石油基金（WTI 原油 ETF）",
           "",
-          "**交易日：** 2026-05-05 · **最近可核实交易日：** 2026-05-04/05 约 147.26 美元，盘中区间 146.63 至 147.47，前收 142.80。52 周区间 61.75 至 151.63——价格距 52 周高点不到 3%。",
+          "**交易日：** 2026-05-05 · **收盘更新（ET 20:15）：** **WTI 原油 −3.9% 至 102.27，Brent −3.99% 至 109.87**——伊朗利好信号与库存累积压制油价。USO 跟跌收盘。**均值回归论据开始兑现。** 早盘读数约 147.26；52 周区间 61.75 至 151.63。",
           "",
           "**宏观框架。** WTI 约 105 美元/桶，Brent 约 114 美元/桶（曾摸至战时高点 126）。两类合约自 2026-02-28 伊朗战争爆发后均上涨约 60%。IEA 称伊朗封锁霍尔木兹海峡是**历史上最大的地缘政治原油供应中断**（是 1973 和 1990 的 2 到 3 倍）。阿联酋于 2026-05-01 退出 OPEC+。",
           "",
@@ -931,6 +936,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     APP: {
       rating: "Hold",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "AppLovin Corporation", zh: "AppLovin 公司" },
       tagline: { en: "Ad tech AXON · Q1 print 2026-05-06 (tomorrow)", zh: "广告科技 AXON · Q1 财报 2026-05-06（明天）" },
       action:  { en: "No new exposure 24h pre print; existing holders trim half size from extended levels", zh: "财报前 24 小时不新增；持仓者从延伸位减半" },
@@ -1103,6 +1109,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     MSTR: {
       rating: "Hold",
       category: "crypto",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Strategy (Bitcoin treasury)", zh: "Strategy（比特币储备公司）" },
       tagline: { en: "818k BTC stack · mNAV 1.25x · preferred stock pivot", zh: "81.8 万枚 BTC · mNAV 1.25x · 优先股转向" },
       action:  { en: "No new long; trim into mNAV recovery; preferred dividend overhang underprices structural risk", zh: "不新增多头；mNAV 回升时减仓；优先股股息悬置低估了结构风险" },
@@ -1277,6 +1284,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     BMNR: {
       rating: "Hold",
       category: "crypto",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "BitMine Immersion Technologies (ETH treasury)", zh: "BitMine Immersion 科技（ETH 储备公司）" },
       tagline: { en: "5.18M ETH stack · trades around book · staking yield in flight", zh: "518 万枚 ETH · 接近账面价值交易 · 质押收益启动中" },
       action:  { en: "Speculative starter (≤ 1% NAV) at discount-to-NAV; not a core position", zh: "在 NAV 折价下可投机性起仓（≤ 1% NAV）；非核心仓位" },
@@ -1449,6 +1457,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     SNDK: {
       rating: "Hold",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "SanDisk Corporation", zh: "SanDisk 公司" },
       tagline: { en: "NAND/AI memory · +331% YTD · Bernstein PT $1,700", zh: "NAND/AI 存储 · 年内 +331% · Bernstein 目标价 1,700" },
       action:  { en: "Trim 30 to 50% of long exposure; do not initiate; conditional re-entry on pullback to 50 SMA", zh: "多头减仓 30 至 50%；不开新仓；回踩 50 日均线条件性重入" },
@@ -1601,6 +1610,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     INTC: {
       rating: "Overweight",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Intel Corporation", zh: "英特尔公司" },
       tagline: { en: "Foundry turnaround executing · +100% YTD · NVIDIA $5B + 18A node", zh: "代工厂转型推进中 · 年内 +100% · NVIDIA 50 亿入股 + 18A 工艺" },
       action:  { en: "Build position in tranches: tranche 1 at market, tranche 2 on 50 SMA pullback", zh: "分批建仓：第一笔现价、第二笔 50 日均线回踩" },
@@ -1761,6 +1771,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     LULU: {
       rating: "Hold",
       category: "consumer",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Lululemon Athletica", zh: "Lululemon" },
       tagline: { en: "At 52w lows · China +20% but Americas slowing · earnings 2026-05-28", zh: "52 周新低 · 中国 +20% 但美洲放缓 · 财报 2026-05-28" },
       action:  { en: "Watch only; conditional starter on stabilisation above $130 with volume", zh: "仅观察；放量站稳 130 上方为条件性起仓信号" },
@@ -1917,6 +1928,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     META: {
       rating: "Overweight",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Meta Platforms", zh: "Meta（Meta Platforms）" },
       tagline: { en: "Q1 2026 +33% revenue but capex raised to $145B · post-print -7%", zh: "Q1 2026 收入 +33% 但 capex 上修至 1450 亿 · 财报后 −7%" },
       action:  { en: "Add into post-print weakness; tranche 1 today, tranche 2 on $580 retest", zh: "财报后回落中加仓；今日第一笔，580 美元再测加第二笔" },
@@ -2077,6 +2089,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     BRKB: {
       rating: "Overweight",
       category: "conservative",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Berkshire Hathaway (Class B)", zh: "伯克希尔·哈撒韦（B 类）" },
       tagline: { en: "Greg Abel's first quarter as CEO · $397B cash · buyback resumed", zh: "Greg Abel 接棒首季 · 现金 3970 亿 · 重启回购" },
       action:  { en: "Build core position; defensive ballast for AI-heavy book", zh: "建核心仓位；为 AI 重仓本子提供防御压舱石" },
@@ -2249,6 +2262,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     AAPL: {
       rating: "Overweight",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Apple Inc.", zh: "苹果公司" },
       tagline: { en: "Q2 2026 +17% YoY · iPhone 17 China rebound · Gemini partnership", zh: "Q2 2026 同比 +17% · iPhone 17 中国回暖 · 牵手 Gemini" },
       action:  { en: "Build position into post-earnings consolidation; tranche on dips", zh: "财报后整理中分批建仓；逢回调加仓" },
@@ -2409,6 +2423,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     GOOGL: {
       rating: "Buy",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Alphabet (Google)", zh: "Alphabet（谷歌）" },
       tagline: { en: "Cloud +63% · Gemini 16B tokens/min · 11th straight double-digit growth quarter", zh: "云收入 +63% · Gemini 每分钟 160 亿 tokens · 连续 11 季双位数增长" },
       action:  { en: "Buy with conviction; size higher than other tech overweights", zh: "高确信度买入；仓位高于其他科技 Overweight" },
@@ -2571,6 +2586,7 @@ window.REPORTS_DATA["2026-05-05"] = {
     TSLA: {
       rating: "Underweight",
       category: "ai",
+      refreshedAt: "2026-05-05 20:15 ET",
       title:   { en: "Tesla", zh: "特斯拉" },
       tagline: { en: "Production–delivery 50k gap · capex $25B+ · FCF turning negative", zh: "生产交付差 5 万辆 · capex 250+ 亿 · 自由现金流转负" },
       action:  { en: "Trim longs; consider defined-risk short via puts; do not chase Optimus narrative", zh: "减仓多头；考虑用 put 做有限风险空头；不追 Optimus 叙事" },

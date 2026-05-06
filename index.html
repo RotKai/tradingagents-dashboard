@@ -203,6 +203,21 @@
     margin-top: 18px;
     letter-spacing: 0.01em;
   }
+  .home-title .refreshed-stamp {
+    display: inline-block;
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.01em;
+  }
+  .home-title .refreshed-stamp .label {
+    color: var(--accent);
+    font-weight: 500;
+    margin-right: 4px;
+  }
 
   /* ===== Macro callout ===== */
   .macro-callout {
@@ -660,7 +675,8 @@
         readMore: "Read analysis",
         viewsLabel: "views",
         countSuffix: function (n) { return n + (n === 1 ? " name" : " names"); },
-        backHome: "All coverage"
+        backHome: "All coverage",
+        refreshedLabel: "Updated"
       },
       detail: {
         backHome: "All coverage",
@@ -671,7 +687,8 @@
         history: "Decision history",
         sidebarMeta: "At a glance",
         currentTag: "Today",
-        publishedOn: "Published"
+        publishedOn: "Published",
+        refreshedAt: "Last refreshed"
       },
       footer: 'TradingAgents · No PII collected · Counts via <span class="accent">abacus.jasoncameron.dev</span>',
       colophon: "Set in Source Serif 4 and Inter. Self-contained static publication, eleven-agent framework in self-LLM mode.",
@@ -692,7 +709,8 @@
         readMore: "阅读分析",
         viewsLabel: "次浏览",
         countSuffix: function (n) { return n + " 只"; },
-        backHome: "覆盖目录"
+        backHome: "覆盖目录",
+        refreshedLabel: "更新于"
       },
       detail: {
         backHome: "覆盖目录",
@@ -703,7 +721,8 @@
         history: "历史决策",
         sidebarMeta: "概览",
         currentTag: "本期",
-        publishedOn: "发布"
+        publishedOn: "发布",
+        refreshedAt: "最近更新"
       },
       footer: 'TradingAgents · 不收集任何身份信息 · 计数走 <span class="accent">abacus.jasoncameron.dev</span>',
       colophon: "正文采用 Source Serif 4 与思源宋体，sans 用 Inter 与思源黑体。本地自包含静态出版物，十一智能体框架 self-LLM 模式。",
@@ -786,7 +805,11 @@
     html += '  <div class="eyebrow">' + I18N[state.lang].home.eyebrow + '</div>';
     html += '  <h1>' + I18N[state.lang].home.h1 + '</h1>';
     html += '  <p class="lede">' + I18N[state.lang].home.lede + '</p>';
-    html += '  <div class="dateline">' + I18N[state.lang].formatDate(state.date) + '</div>';
+    html += '  <div class="dateline">' + I18N[state.lang].formatDate(state.date);
+    if (entry.lastRefreshed) {
+      html += '    <span class="refreshed-stamp"><span class="label">' + I18N[state.lang].home.refreshedLabel + '</span>' + escapeHtml(entry.lastRefreshed) + '</span>';
+    }
+    html += '  </div>';
     html += '</div>';
 
     var macro = entry.macro && entry.macro[state.lang];
@@ -893,6 +916,9 @@
     html += '      <span><span class="key">' + I18N[state.lang].detail.publishedOn + '</span><span class="val">' + I18N[state.lang].formatDate(date) + '</span></span>';
     html += '      <span><span class="key">' + I18N[state.lang].detail.rating + '</span><span class="val">' + rating + '</span></span>';
     html += '      <span><span class="key">' + I18N[state.lang].detail.horizon + '</span><span class="val">' + escapeHtml(horizonVal) + '</span></span>';
+    if (tk.refreshedAt) {
+      html += '      <span><span class="key">' + I18N[state.lang].detail.refreshedAt + '</span><span class="val">' + escapeHtml(tk.refreshedAt) + '</span></span>';
+    }
     html += '    </div>';
     html += '  </header>';
 
