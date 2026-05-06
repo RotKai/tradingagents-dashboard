@@ -219,10 +219,67 @@
     margin-right: 4px;
   }
 
-  /* ===== Macro callout ===== */
+  /* ===== Lead story (Market & Macro Brief) ===== */
+  .lead-story {
+    margin: 40px 0 48px;
+    padding: 28px 32px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .lead-story:hover { background: var(--paper-2); border-left-color: var(--ink); }
+  .lead-story .lead-kicker {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .lead-story h2 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.18;
+    margin: 0 0 8px;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+  }
+  .lead-story .lead-stance {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0 0 14px;
+  }
+  .lead-story .lead-tagline {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    margin-bottom: 8px;
+    letter-spacing: -0.003em;
+  }
+  .lead-story .lead-cta {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  /* ===== Macro callout (one-liner above lead) ===== */
   .macro-callout {
     max-width: 720px;
-    margin: 36px 0 56px;
+    margin: 36px 0 24px;
     padding: 14px 0 14px 22px;
     border-left: 2px solid var(--accent);
     font-family: var(--sans);
@@ -676,7 +733,9 @@
         viewsLabel: "views",
         countSuffix: function (n) { return n + (n === 1 ? " name" : " names"); },
         backHome: "All coverage",
-        refreshedLabel: "Updated"
+        refreshedLabel: "Updated",
+        leadKicker: "Lead Story · Market & Macro",
+        leadCta: "Read the full brief →"
       },
       detail: {
         backHome: "All coverage",
@@ -710,7 +769,9 @@
         viewsLabel: "次浏览",
         countSuffix: function (n) { return n + " 只"; },
         backHome: "覆盖目录",
-        refreshedLabel: "更新于"
+        refreshedLabel: "更新于",
+        leadKicker: "头条 · 市场与宏观",
+        leadCta: "阅读完整简报 →"
       },
       detail: {
         backHome: "覆盖目录",
@@ -772,6 +833,7 @@
     if (!raw) return { view: "home" };
     var parts = raw.split("/");
     if (parts[0] === "ticker" && parts[1]) return { view: "ticker", ticker: parts[1].toUpperCase(), date: parts[2] || null };
+    if (parts[0] === "market") return { view: "market", date: parts[1] || null };
     return { view: "home" };
   }
 
@@ -818,6 +880,21 @@
       html += '  <span class="label">' + I18N[state.lang].home.macroLabel + '</span>';
       html += escapeHtml(macro);
       html += '</div>';
+    }
+
+    // Lead Story — Market & Macro Brief (clickable card above the sector grids)
+    var brief = entry.marketBrief;
+    if (brief) {
+      var briefTitle = (brief.title && brief.title[state.lang]) || "";
+      var briefStance = (brief.stance && brief.stance[state.lang]) || "";
+      var briefTagline = (brief.tagline && brief.tagline[state.lang]) || "";
+      html += '<a class="lead-story" href="#/market">';
+      html += '  <div class="lead-kicker">' + I18N[state.lang].home.leadKicker + '</div>';
+      html += '  <h2>' + escapeHtml(briefTitle) + '</h2>';
+      html += '  <p class="lead-stance">' + escapeHtml(briefStance) + '</p>';
+      html += '  <div class="lead-tagline">' + escapeHtml(briefTagline) + '</div>';
+      html += '  <span class="lead-cta">' + I18N[state.lang].home.leadCta + '</span>';
+      html += '</a>';
     }
 
     // Group by category
@@ -981,10 +1058,74 @@
     bumpCounter("ticker-" + ticker);
   }
 
+  // ----- Market Brief detail -----
+  function renderMarket(dateOverride) {
+    var app = document.getElementById("app");
+    var date = dateOverride || state.date;
+    var entry = data[date];
+    var brief = entry && entry.marketBrief;
+    if (!brief) { app.innerHTML = '<div class="empty-state">' + I18N[state.lang].noData + '</div>'; return; }
+
+    var title = (brief.title && brief.title[state.lang]) || "";
+    var stance = (brief.stance && brief.stance[state.lang]) || "";
+    var tagline = (brief.tagline && brief.tagline[state.lang]) || "";
+    var bodyMd = (brief.body && brief.body[state.lang]) || "";
+
+    var html = "";
+    html += '<div class="breadcrumb"><a href="#/">' + I18N[state.lang].detail.backHome + '</a><span class="sep">/</span><span>' + I18N[state.lang].home.leadKicker + '</span></div>';
+    html += '<div class="article-wrap">';
+    html += '<div class="article-main">';
+    html += '  <header class="article-header">';
+    html += '    <div class="kicker">' + I18N[state.lang].home.leadKicker + '</div>';
+    html += '    <h1>' + escapeHtml(title) + '</h1>';
+    html += '    <p class="deck">' + escapeHtml(stance) + '</p>';
+    html += '    <div class="article-byline">';
+    html += '      <span><span class="key">' + I18N[state.lang].detail.publishedOn + '</span><span class="val">' + I18N[state.lang].formatDate(date) + '</span></span>';
+    if (brief.refreshedAt) {
+      html += '      <span><span class="key">' + I18N[state.lang].detail.refreshedAt + '</span><span class="val">' + escapeHtml(brief.refreshedAt) + '</span></span>';
+    }
+    html += '    </div>';
+    html += '  </header>';
+    html += '  <article class="body" id="article-body"></article>';
+    html += '</div>';
+
+    // Sidebar — show ticker rating snapshot
+    html += '<aside class="sidebar">';
+    html += '  <div class="panel">';
+    html += '    <div class="panel-head">' + (state.lang === "zh" ? "本期评级速览" : "This Issue at a Glance") + '</div>';
+    html += '    <div style="font-family: var(--sans); font-size: 12.5px; line-height: 1.6;">';
+    var tickers = Object.keys(entry.tickers || {});
+    tickers.forEach(function (t) {
+      var tk = entry.tickers[t];
+      var r = tk.rating || "";
+      html += '<a href="#/ticker/' + t + '" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted var(--rule); border-bottom-style: dotted; color: var(--ink); text-decoration: none;">';
+      html += '  <span style="font-weight: 600;">' + t + '</span>';
+      html += '  <span class="rating-pill ' + r + '" style="font-size: 9.5px; padding: 2px 6px;">' + r + '</span>';
+      html += '</a>';
+    });
+    html += '    </div>';
+    html += '  </div>';
+    html += '</aside>';
+    html += '</div>';
+
+    html += '<div class="site-footer">';
+    html += '  <div>' + I18N[state.lang].footer + '</div>';
+    html += '  <div class="colophon">' + I18N[state.lang].colophon + '</div>';
+    html += '</div>';
+    app.innerHTML = html;
+
+    var bodyEl = document.getElementById("article-body");
+    if (bodyMd && window.marked && marked.parse) bodyEl.innerHTML = marked.parse(bodyMd);
+    else if (bodyMd) bodyEl.textContent = bodyMd;
+
+    bumpCounter("market-brief");
+  }
+
   function render() {
     applyChrome();
     var route = parseRoute();
     if (route.view === "ticker") renderDetail(route.ticker, route.date);
+    else if (route.view === "market") renderMarket(route.date);
     else renderHome();
   }
 
