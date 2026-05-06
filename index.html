@@ -419,6 +419,28 @@
     font-weight: 500;
     letter-spacing: 0.02em;
   }
+  .ticker-card-meta .stamp {
+    color: var(--ink-faint);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Breaking-event badge for tickers whose rating changed since prior date */
+  .change-flag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 7px;
+    font-family: var(--sans);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    background: var(--accent-soft);
+  }
+  .change-flag.upgraded { color: var(--buy); border-color: var(--buy); background: transparent; }
+  .change-flag.downgraded { color: var(--sell); border-color: var(--sell); background: transparent; }
 
   /* ===== Detail: article header ===== */
   .article-wrap {
@@ -735,7 +757,10 @@
         backHome: "All coverage",
         refreshedLabel: "Updated",
         leadKicker: "Lead Story · Market & Macro",
-        leadCta: "Read the full brief →"
+        leadCta: "Read the full brief →",
+        ratingChanged: "Rating changed",
+        ratingUpgraded: "Upgraded",
+        ratingDowngraded: "Downgraded"
       },
       detail: {
         backHome: "All coverage",
@@ -771,7 +796,10 @@
         backHome: "覆盖目录",
         refreshedLabel: "更新于",
         leadKicker: "头条 · 市场与宏观",
-        leadCta: "阅读完整简报 →"
+        leadCta: "阅读完整简报 →",
+        ratingChanged: "评级变动",
+        ratingUpgraded: "上调",
+        ratingDowngraded: "下调"
       },
       detail: {
         backHome: "覆盖目录",
@@ -911,6 +939,9 @@
       return oa - ob;
     });
 
+    // Rating tier ordering used for upgrade/downgrade detection.
+    var RATING_TIER = { "Buy": 5, "Overweight": 4, "Hold": 3, "Underweight": 2, "Sell": 1 };
+
     orderedCats.forEach(function (cat) {
       var ts = groups[cat];
       var label = (CATEGORIES[cat] && CATEGORIES[cat][state.lang]) || cat;
@@ -926,17 +957,42 @@
         var tagline = (tk.tagline && tk.tagline[state.lang]) || "";
         var viewsKey = "ticker-" + t;
         var cached = viewCache[viewsKey];
+        var refreshed = tk.refreshedAt || "";
+
+        // Detect rating change versus the prior date that has this ticker.
+        var changeFlag = "";
+        var allDates = dates();
+        var idx = allDates.indexOf(state.date);
+        for (var i = idx + 1; i < allDates.length; i++) {
+          var prior = data[allDates[i]] && data[allDates[i]].tickers && data[allDates[i]].tickers[t];
+          if (!prior) continue;
+          if (prior.rating && prior.rating !== rating) {
+            var was = RATING_TIER[prior.rating] || 0;
+            var now = RATING_TIER[rating] || 0;
+            var direction = now > was ? "upgraded" : (now < was ? "downgraded" : "");
+            var label2 = direction === "upgraded" ? I18N[state.lang].home.ratingUpgraded
+                       : direction === "downgraded" ? I18N[state.lang].home.ratingDowngraded
+                       : I18N[state.lang].home.ratingChanged;
+            changeFlag = '<span class="change-flag ' + direction + '" title="' + escapeHtml(prior.rating) + ' → ' + rating + '">' + label2 + '</span>';
+          }
+          break; // only compare to the most recent prior date
+        }
+
         html += '<a class="ticker-card" href="#/ticker/' + t + '">';
         html += '  <div class="ticker-card-head">';
         html += '    <div class="symbol-line">';
         html += '      <span class="symbol">' + t + '</span>';
         html += '      <span class="company">' + escapeHtml(company) + '</span>';
         html += '    </div>';
-        html += '    <span class="rating-pill ' + rating + '">' + rating + '</span>';
+        html += '    <span style="display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap;">';
+        html += '      <span class="rating-pill ' + rating + '">' + rating + '</span>';
+        html += changeFlag;
+        html += '    </span>';
         html += '  </div>';
         html += '  <div class="tagline">' + escapeHtml(tagline) + '</div>';
         html += '  <div class="ticker-card-meta">';
         html += '    <span class="views" data-views-key="' + viewsKey + '">' + (cached != null ? fmtN(cached) + " " + I18N[state.lang].home.viewsLabel : "") + '</span>';
+        html += '    <span class="stamp">' + escapeHtml(refreshed) + '</span>';
         html += '    <span class="read-link">' + I18N[state.lang].home.readMore + ' →</span>';
         html += '  </div>';
         html += '</a>';
