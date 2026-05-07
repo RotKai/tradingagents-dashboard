@@ -173,6 +173,7 @@ For every ticker classified MATERIAL in Phase 2, write a fresh body following th
 3. Every directional decision (Tranche prices, stops, profit targets) must be expressed in the new date's price grid. If the entry zone moved 5%+, the trader plan is revised, not copied.
 4. If the rating is changing from the prior date, **state it explicitly** in Phase 5 (e.g. `**Rating: Underweight** (revised from Hold on YYYY‑MM‑DD).`). The home page change‑flag detection depends on this.
 5. Options strategy must reflect today's IV regime, not yesterday's. Pre‑print IV crush, post‑print compression, and breakout‑day expansion all change the right structure.
+6. **Named historical analogues must be explained the first time they appear.** Phrases like "SNOW analogue", "DDOG case", "Buffett-pillars test", "1973 oil shock parallel" are insider jargon that confuse general readers. The first time any such phrase appears in a body or tagline, follow it with a one-sentence explanation of what the historical case actually was. Example: ❌ `"SNOW analogue in execution"` → ✅ `"following the Snowflake 2020-2022 pattern (high-multiple software stock undergoing multi-quarter P/S compression even while revenue continued to grow 30%+)"`. Subsequent references in the same body can be shorter ("the SNOW pattern" / "the Snowflake-style compression") since the explanation has been established.
 
 ---
 
@@ -276,6 +277,7 @@ This is what `propagate()` would do in the real Python pipeline. The append is w
 | Not updating page after data change | Rating change exists in data but invisible on home card | Phase 6 sync — check every visible surface |
 | Treating `refreshedAt` as cosmetic | User correctly flags stale timestamps as a sign nothing was actually refreshed | Bump on every audit pass, every ticker |
 | Updating `marketBrief.tagline` and `refreshedAt` but forgetting `marketBrief.body` | Lead-story card looks fresh but the article body still references the prior date's tape; reader clicks in and sees stale content | Treat `marketBrief.body` as a required mandatory rewrite every day, same as ticker bodies — Phase 3 checklist enforces this |
+| Using insider jargon analogues without explanation ("SNOW analogue in execution", "Buffett-pillars failed", "1973 oil shock parallel") | Reader who doesn't know the historical case is confused; thinks the report is mistakenly mixing tickers (e.g. user asked "why is PLTR's report referencing SNOW") | Phase 4 hard rule #6 — every named historical analogue must be explained the first time it appears in a body or tagline; subsequent references can be shorter |
 
 ---
 

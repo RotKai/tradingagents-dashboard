@@ -4716,7 +4716,7 @@ window.REPORTS_DATA["2026-05-07"] = (function () {
       "",
       "## Sector Rotation Read",
       "",
-      "5/6 tape: tech leading (Nasdaq +2.02%), oil/energy weak (USO -2.3% etc), defensive lagging (BRKB underperforming as flows favored beta). The cohort leadership pattern continues to say melt-up regime, not late-cycle blow-off. PLTR's -6.75% break is name-specific (SNOW analogue execution), not cohort-wide.",
+      "5/6 tape: tech leading (Nasdaq +2.02%), oil/energy weak (USO -2.3% etc), defensive lagging (BRKB underperforming as flows favored beta). The cohort leadership pattern continues to say melt-up regime, not late-cycle blow-off. PLTR's -6.75% break is name-specific — it is following the Snowflake 2020-2022 pattern (high-multiple software stock undergoing multi-quarter P/S compression even while revenue continues to grow), not a cohort-wide signal.",
       "",
       "## Synthesis · The three regime-breaking conditions, updated",
       "",
@@ -4735,7 +4735,7 @@ window.REPORTS_DATA["2026-05-07"] = (function () {
       "**Tranched AI exposure:** ORCL (Overweight, breakout digesting), INTC (Overweight, +12.92% breakout day held), META (Overweight, +33% revenue answers capex tax), AAPL (Overweight, near 52w high).",
       "**Wait-for-catalyst names:** CRCL (Hold, Q1 print 2026-05-11 in 2 sessions).",
       "**Trim or short:** TSLA (Underweight, holding range at +40% over GF Value), USO (Underweight HIGH conviction, regime change in execution), SNDK (Hold-trim, 5/6 -3.86% relative-strength distribution signal), APP (Hold, post-print muted-reaction validates the binding signal).",
-      "**RATING DOWNGRADE on 2026-05-07:** **PLTR Hold → Underweight** on -6.75% break of post-Q1 holding range; SNOW analogue in execution.",
+      "**RATING DOWNGRADE on 2026-05-07:** **PLTR Hold → Underweight** on -6.75% break of post-Q1 holding range. The Snowflake 2020-2022 historical analogue (high-multiple software stock undergoing multi-quarter P/S compression while revenue continues to grow) is now in execution mode.",
       "**Crypto-adjacent (Hold across):** MSTR (Underweight maintained from 5/5, BTC up doesn't reverse Saylor reversal), BMNR (Hold, ETH at $2,412 lifts NAV mechanically; relative-cleanliness vs MSTR validated).",
       "**Watch list:** LULU (Hold, JPMorgan downgrade 5/6, conditional re-entry trigger 3+ sessions above $135).",
       "",
@@ -4774,7 +4774,7 @@ window.REPORTS_DATA["2026-05-07"] = (function () {
       "",
       "## 板块轮动读数",
       "",
-      "5/6 盘面：科技领涨（纳斯达克 +2.02%）、油气弱（USO −2.3% 等）、防御滞后（BRKB 跑输因资金偏 beta）。同业领涨模式继续说 melt-up 体制，不是末段 blow-off。PLTR −6.75% 突破是单标的（SNOW 类比执行），不是同业级。",
+      "5/6 盘面：科技领涨（纳斯达克 +2.02%）、油气弱（USO −2.3% 等）、防御滞后（BRKB 跑输因资金偏 beta）。同业领涨模式继续说 melt-up 体制，不是末段 blow-off。PLTR −6.75% 突破是单标的——在沿着 Snowflake 2020-2022 模式（高倍数软件公司即便收入继续增长也发生多季度 P/S 压缩）走，不是同业级信号。",
       "",
       "## 综合 · 三个体制破坏条件更新",
       "",
@@ -4793,7 +4793,7 @@ window.REPORTS_DATA["2026-05-07"] = (function () {
       "**分批 AI 敞口：** ORCL（Overweight，突破后整理）、INTC（Overweight，+12.92% 突破日守住）、META（Overweight，+33% 收入抵消 capex 税）、AAPL（Overweight，距 52 周高近）。",
       "**等待催化：** CRCL（Hold，Q1 财报 2026-05-11，还剩 2 个交易日）。",
       "**减仓或做空：** TSLA（Underweight，区间维持于 +40% 超 GF Value）、USO（Underweight 高确信，体制变化在执行）、SNDK（Hold-减仓，5/6 −3.86% 相对强度分销信号）、APP（Hold，财报后温和反应验证绑定信号）。",
-      "**2026-05-07 评级下调：PLTR Hold → Underweight**，因 −6.75% 突破财报后持仓区间；SNOW 类比在执行。",
+      "**2026-05-07 评级下调：PLTR Hold → Underweight**，因 −6.75% 突破财报后持仓区间。Snowflake 2020-2022 历史类比（高倍数软件公司在收入继续增长时经历多季度 P/S 压缩）现已进入执行模式。",
       "**加密邻近全部 Hold：** MSTR（自 5/5 维持 Underweight，BTC 上行不逆转 Saylor 反转）、BMNR（Hold，ETH 2,412 机械抬升 NAV；相对于 MSTR 干净度得到验证）。",
       "**观察清单：** LULU（Hold，5/6 摩根大通下调，条件再入场触发器为 3+ 个交易日 135 上方）。",
       "",
@@ -5125,11 +5125,13 @@ window.REPORTS_DATA["2026-05-07"] = (function () {
     en: [
       "# PLTR — Palantir Technologies",
       "",
-      "**Trade date:** 2026-05-07 · **Last verifiable session:** 2026-05-06 close $136.18 (-6.75% on day). **Decisive break of the post-Q1 holding range; SNOW/DDOG analogue is now in execution.**",
+      "**Trade date:** 2026-05-07 · **Last verifiable session:** 2026-05-06 close $136.18 (-6.75% on day). **Decisive break of the post-Q1 holding range; the multi-quarter P/S compression scenario (using Snowflake 2020-2022 as the historical reference case) is now in execution.**",
+      "",
+      "**What \"SNOW analogue\" means in this report:** Snowflake (SNOW) peaked at ~$430 in late 2020 with forward P/S 60-80x. Despite continuing to grow revenue at 30%+ for the next two years, its forward P/S compressed 70% (down to ~20-25x) and the stock lost more than half its value. **The pattern is: extreme multiple + continued strong growth → multi-quarter multiple compression even when fundamentals stay intact.** PLTR at 49x forward P/S with the same growth profile is in the same setup.",
       "",
       "## Phase 1 · Same-day market read",
       "",
-      "Palantir broke -6.75% on 2026-05-06 — the largest single-day decline since the Q1 earnings disappointment two weeks ago. **This is the binding signal we were watching for: the buyers who sustained the $140-$148 range exhausted, and the lower-priced sellers took control.** From a technical standpoint, the break decisively closes the post-print whipsaw period from 5/5 and confirms that the SNOW/DDOG multi-quarter compression analogue is now in execution mode, not just a possibility.",
+      "Palantir broke -6.75% on 2026-05-06 — the largest single-day decline since the Q1 earnings disappointment two weeks ago. **This is the binding signal we were watching for: the buyers who sustained the $140-$148 range exhausted, and the lower-priced sellers took control.** From a technical standpoint, the break decisively closes the post-print whipsaw period from 5/5 and confirms that the SNOW-style multi-quarter compression scenario (defined above) is now in execution mode, not just a possibility.",
       "",
       "$136.18 is now below the 50 SMA (~$145), well below the 200 SMA (~$170), and the prior \"post-earnings low\" support zone is now broken. Forward P/S 49x → 47x mechanically; the underlying business is unchanged, but the cohort revaluation is ongoing. The historical precedent (SNOW peak P/S compression cycle) targets a 25-30x P/S terminal multiple, which on FY2026 guide of $7.66B implies a $190-$230B market cap — vs current ~$320B. **That implies another 30-40% downside on the SNOW-style compression play.**",
       "",
@@ -5178,11 +5180,13 @@ window.REPORTS_DATA["2026-05-07"] = (function () {
     zh: [
       "# PLTR — Palantir 科技",
       "",
-      "**交易日：** 2026-05-07 · **最近可核实交易日：** 2026-05-06 收盘 136.18（当日 −6.75%）。**财报后持仓区间决定性突破；SNOW/DDOG 类比现在进入执行模式。**",
+      "**交易日：** 2026-05-07 · **最近可核实交易日：** 2026-05-06 收盘 136.18（当日 −6.75%）。**财报后持仓区间决定性突破；多季度 P/S 压缩情景（以 Snowflake 2020-2022 案例为历史参照）现在进入执行模式。**",
+      "",
+      "**本报告里「SNOW 类比」的具体含义：** Snowflake（SNOW，云数据库公司）在 2020 年底冲到 ~430 美元、远期 P/S 60-80x。接下来两年里**收入继续以 30%+ 增长**——但远期 P/S 压缩 70%（降至约 20-25x），股价跌掉一半以上。**这个模式的核心是：极端倍数 + 持续强劲增长 → 即便基本面完整也会发生多季度倍数压缩。** PLTR 在 49x 远期 P/S 配同样的增长画像、处于同样的 setup。",
       "",
       "## 阶段 1 · 当日盘面解读",
       "",
-      "Palantir 在 2026-05-06 −6.75% 突破——是两周前 Q1 财报反应失望以来最大单日跌幅。**这正是我们等待的绑定信号：维持 140-148 区间的买盘耗尽，更低价的卖盘获得控制。** 技术上，这个突破决定性结束 5/5 财报后拖锯期，确认 SNOW/DDOG 多季度压缩类比现已进入执行模式、不再只是可能。",
+      "Palantir 在 2026-05-06 −6.75% 突破——是两周前 Q1 财报反应失望以来最大单日跌幅。**这正是我们等待的绑定信号：维持 140-148 区间的买盘耗尽，更低价的卖盘获得控制。** 技术上，这个突破决定性结束 5/5 财报后拖锯期，确认上述 SNOW 风格的多季度压缩情景现已进入执行模式、不再只是可能。",
       "",
       "136.18 现在低于 50 日均线（~145）、远低于 200 日均线（~170），先前的「财报后低点」支撑区间已被破。远期 P/S 49x → 47x 机械；底层业务不变，但同业重估持续。历史先例（SNOW 峰值 P/S 压缩周期）目标 25-30x P/S 终值，按 FY2026 指引 76.6 亿计算，隐含 1900-2300 亿市值——vs 当前 ~3200 亿。**这意味着 SNOW 风格压缩论据下还有 30-40% 下行空间。**",
       "",
@@ -6387,8 +6391,8 @@ window.REPORTS_DATA["2026-05-07"] = (function () {
   // PLTR rating downgrade on 5/7 — Hold to Underweight.
   base.tickers.PLTR.rating = "Underweight";
   base.tickers.PLTR.tagline = {
-    en: "DOWNGRADED 5/7 · -6.75% break confirms SNOW analogue execution · forward P/S 47x with 30-40% further downside scenario",
-    zh: "5/7 评级下调 · −6.75% 突破确认 SNOW 类比执行 · 远期 P/S 47x、还有 30-40% 下行空间情景"
+    en: "DOWNGRADED 5/7 · -6.75% break · multi-quarter P/S compression in execution (Snowflake 2020-2022 case as reference: kept growing 30%+ but multiple fell 70%) · forward P/S 47x with 30-40% further downside scenario",
+    zh: "5/7 评级下调 · −6.75% 突破 · 多季度 P/S 压缩在执行（参照 Snowflake 2020-2022 案例：仍保持 30%+ 增长但倍数下跌 70%）· 远期 P/S 47x、还有 30-40% 下行空间情景"
   };
   base.tickers.PLTR.action = {
     en: "Trim aggressively on any rebound to $145+; tactical short via bear put spread; long re-entry $100-$110",
