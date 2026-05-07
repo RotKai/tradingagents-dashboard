@@ -58,18 +58,41 @@ Then classify each ticker by the **depth** of the rewrite needed (note: every ti
 
 In `data.js`, **always create a new top‑level date key**. Never overwrite a prior date key. The framework is `history-anchored`; daily entries are append‑only.
 
+**Required updates to the new date entry (every single one mandatory, no exceptions):**
+
+| Field | Updated to | Why mandatory |
+| --- | --- | --- |
+| `lastRefreshed` | today's audit time `YYYY-MM-DD HH:MM ET` | top of every page; if stale, user immediately distrusts the analysis |
+| `macro` (EN + ZH) | one-paragraph today's tape recap | the home-page macro callout above the lead story |
+| `marketBrief.refreshedAt` | today's audit time | byline of the lead-story article |
+| `marketBrief.tagline` (EN + ZH) | reflects today's tape | home-page lead-story card subtitle |
+| `marketBrief.stance` (EN + ZH) | reaffirmed or revised | shown as italic deck under the lead-story headline |
+| **`marketBrief.body` (EN + ZH)** | **fully rewritten** for today | the full long-form macro article — readers click into this |
+| Every ticker's `refreshedAt` | today's audit time | per-card timestamp on home page |
+| Every ticker's `body` (EN + ZH) | freshly written for today (full or tighter) | the framework-anchored 7-phase analysis |
+| Tickers with rating changes: `rating`, `tagline`, `action`, `keyRisk` | revised to reflect new direction | drives change-flag badge auto-detection |
+
 Skeleton:
 
 ```js
 window.REPORTS_DATA["YYYY-MM-DD"] = (function () {
   var base = JSON.parse(JSON.stringify(window.REPORTS_DATA["<PRIOR-DATE>"]));
-  base.lastRefreshed = "<YYYY-MM-DD HH:MM ET>";
-  base.macro = { en: "...", zh: "..." };          // updated with today's pull
-  base.marketBrief.refreshedAt = "<YYYY-MM-DD HH:MM ET>";
-  base.marketBrief.tagline = { en: "...", zh: "..." }; // reflect today's tape
 
-  var freshBodies = {};
-  // Populate freshBodies for every ticker that hit MATERIAL classification.
+  // ---- Date-level metadata ----
+  base.lastRefreshed = "<YYYY-MM-DD HH:MM ET>";
+  base.macro = { en: "...", zh: "..." };
+
+  // ---- Market & Macro Brief (LEAD STORY) — fully rewritten ----
+  base.marketBrief.refreshedAt = "<YYYY-MM-DD HH:MM ET>";
+  base.marketBrief.tagline = { en: "...", zh: "..." };
+  base.marketBrief.stance   = { en: "...", zh: "..." };
+  base.marketBrief.body     = { en: "...", zh: "..." }; // ← MUST be fresh, not inherited
+
+  // ---- Per-ticker fresh bodies ----
+  var freshBodies = {
+    // Every ticker has an entry here. MATERIAL gets full 7-phase rewrite;
+    // NON-MATERIAL gets tighter rewrite (~50% length) but still fresh.
+  };
 
   Object.keys(base.tickers).forEach(function (t) {
     var tk = base.tickers[t];
@@ -77,16 +100,23 @@ window.REPORTS_DATA["YYYY-MM-DD"] = (function () {
     if (freshBodies[t]) {
       tk.body = freshBodies[t];
     }
-    // For non‑material tickers, leave inherited body. Do NOT inject snapshot
-    // banners or audit notes — those were a band‑aid that the user (correctly)
-    // flagged as lazy. Either rewrite or leave clean.
+    // No clone path. Every ticker must be in freshBodies.
   });
+
+  // ---- Rating-change overrides (only for tickers whose rating shifted) ----
+  // base.tickers.PLTR.rating = "Underweight";
+  // base.tickers.PLTR.tagline = { en: "DOWNGRADED ...", zh: "..." };
+  // (etc.)
 
   return base;
 })();
 ```
 
-**Hard rule:** every ticker in the new entry must have `refreshedAt` set to today's audit timestamp. Even non‑material tickers — the timestamp signals "the call has been re‑audited at this time", not "the body is new".
+**Three places that often get missed (the user has caught all three at different points; treat as mandatory checklist):**
+
+1. **`base.marketBrief.body`** — the lead story is the most-read page; if it inherits from yesterday, it references yesterday's tape and contradicts today's macro callout one screen above. The 2026-05-07 refresh missed this initially.
+2. **`base.tickers[T].body`** for every ticker, not just material ones — see Phase 5.
+3. **Per-ticker `refreshedAt`** even on no-news days — see Phase 5.
 
 ---
 
@@ -245,6 +275,7 @@ This is what `propagate()` would do in the real Python pipeline. The append is w
 | Not updating tranche entry prices when price moved 5%+ | INTC tranche 1 at $95 looks ridiculous when stock closed $108 | Phase 4/5 rewrite mandates revised entry zones |
 | Not updating page after data change | Rating change exists in data but invisible on home card | Phase 6 sync — check every visible surface |
 | Treating `refreshedAt` as cosmetic | User correctly flags stale timestamps as a sign nothing was actually refreshed | Bump on every audit pass, every ticker |
+| Updating `marketBrief.tagline` and `refreshedAt` but forgetting `marketBrief.body` | Lead-story card looks fresh but the article body still references the prior date's tape; reader clicks in and sees stale content | Treat `marketBrief.body` as a required mandatory rewrite every day, same as ticker bodies — Phase 3 checklist enforces this |
 
 ---
 
