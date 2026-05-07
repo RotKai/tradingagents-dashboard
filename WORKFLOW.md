@@ -37,7 +37,7 @@ Required data points before writing any analysis:
 
 ---
 
-## Phase 2 · Breaking‑news scan (the trigger that decides clone vs rewrite)
+## Phase 2 · Breaking‑news scan + classification
 
 For each of the 15 tickers, run one search:
 
@@ -45,12 +45,12 @@ For each of the 15 tickers, run one search:
 <TICKER> earnings news <DATE>
 ```
 
-Then classify:
+Then classify each ticker by the **depth** of the rewrite needed (note: every ticker gets a fresh body — we do not clone; the only question is how much the analysis content changes):
 
-* **MATERIAL event** — earnings released, guide change, M&A announcement, regulatory event, executive change, management commentary that **changes the underlying thesis** (Saylor's "never sell" reversal is the canonical example), single‑day move ≥ 5% — go to **REWRITE PATH** for that ticker.
-* **NON‑MATERIAL** — small move, no specific catalyst, news only confirms existing thesis — eligible for **CLONE PATH** for that ticker, but with surgical price update (see Phase 4).
+* **MATERIAL event** — earnings released, guide change, M&A announcement, regulatory event, executive change, management commentary that **changes the underlying thesis** (Saylor's "never sell" reversal is the canonical example), single‑day move ≥ 5%. Full 7‑phase deep rewrite required, often with rating change.
+* **NON‑MATERIAL** — small move, no specific catalyst, news confirms existing thesis. Still gets a fresh 7‑phase body anchored to today's price grid, but the analysis can acknowledge "thesis unchanged from prior date" and be ~50% the length of a material rewrite.
 
-**Never use clone path for a ticker with a material event.** The single biggest mistake in the 2026‑05‑05 → 2026‑05‑06 refresh was treating MSTR as clone‑eligible after the Saylor reversal. The thesis revision required the full 7‑phase rewrite that flipped Hold to Underweight.
+**Hard rule, no exceptions: every ticker in every new date entry gets a fresh body.** Clone-path was a tempting shortcut and we tried it for the 5/5 → 5/6 refresh; the user correctly rejected it. The framework's "fact-driven, history-anchored" invariant means **the body of every ticker on date X must reference date X minus one as its 'last verifiable session', not date X minus N.** A clone of yesterday's body inside today's date entry is structurally dishonest — it advertises today's date in the URL and timestamp but reads from yesterday's data.
 
 ---
 
@@ -146,20 +146,28 @@ For every ticker classified MATERIAL in Phase 2, write a fresh body following th
 
 ---
 
-## Phase 5 · Per‑ticker CLONE path (non‑material only)
+## Phase 5 · NON‑MATERIAL ticker rewrite (still fresh, just lighter)
 
-For non‑material tickers, the IIFE deep‑clone of the prior date carries the body forward. **No additional body changes.** The `refreshedAt` bump on the ticker is the only signal that the call was re‑audited today.
+For non‑material tickers, follow the same 7‑phase template as Phase 4 but tighter (~50% length). The analysis can explicitly say "thesis unchanged from <PRIOR-DATE>" inside Phase 1, but every other element — `Trade date:`, `Last verifiable session:`, entry zones, stops, options strikes — must reflect today's actual price grid pulled in Phase 1.
+
+**The non-material rewrite is NOT a clone with cosmetic changes.** It is a deliberate fresh write that confirms or refines the thesis using today's price action and any incremental information. Examples of what a non-material 5/7 body must actually say:
+
+* `Trade date: 2026-05-07` (not 2026-05-06)
+* `Last verifiable session: 2026-05-06 close $X` (real number from Phase 1)
+* Entry zones updated if today's close moved them (e.g. tranche 1 at $95 stays unrealistic at $108; new tranche 1 zone is $108-$112)
+* Phase 1 paragraph references today's tape, not yesterday's
+* Phase 5 reaffirms the rating with one-line "no thesis change" justification
 
 **Do not:**
 
+* Use the prior date's body verbatim. That is clone-path and is forbidden.
 * Inject "morning audit" banners into the body. The user has explicitly flagged these as lazy — they explain staleness instead of fixing it.
-* Inject same‑day price snapshots into the body. Same reason.
-* Modify the body partially. If you need to change the body, the ticker is MATERIAL and goes through the rewrite path.
 
 **Do:**
 
+* Write a fresh 30-50 line body (each language) that reflects today's information state honestly.
 * Bump `refreshedAt`.
-* If price moved enough that the prior `tagline`, `action`, or `keyRisk` no longer makes sense (e.g. INTC's tranche‑1 entry at $95 became stale at $108), update those metadata fields. They are short and the home card surfaces them.
+* Update `tagline`, `action`, `keyRisk` metadata if the prior versions no longer reflect today's price grid.
 
 ---
 
@@ -229,12 +237,14 @@ This is what `propagate()` would do in the real Python pipeline. The append is w
 | Anti‑pattern | What goes wrong | Correct alternative |
 | --- | --- | --- |
 | Overwriting prior date entry's fields in place | History is destroyed; can't compare prior decisions | Always append a new date key |
-| Cloning yesterday's body and adding "morning audit" banner | Body still references stale prices; the banner explains staleness instead of fixing it | Rewrite the body or accept the inherited body without banner |
+| Cloning yesterday's body verbatim into today's date | Body says "Trade date: yesterday" inside an entry keyed as today; "Last verifiable session" references the day before yesterday | Write fresh body for every ticker, every day; non-material gets tighter version |
+| Cloning yesterday's body + adding "morning audit" banner | Body still references stale prices; banner explains staleness instead of fixing it | Same fix — fresh body required |
+| Cloning yesterday's body + injecting "same-day price snapshot" blockquote on top | Reader sees today's price in the snapshot, but the analysis below uses yesterday's grid; they don't match | Same fix — fresh body required |
 | Fabricating timestamps ("let's say 09:20") | Timestamps don't match reality; user notices and loses trust | Run `date` and use the real wall‑clock time |
 | Skipping breaking‑news scan | Missed material events (MSTR Saylor reversal) get cloned forward at the wrong rating | Always run Phase 2; classify every ticker MATERIAL or NON‑MATERIAL |
-| Not updating tranche entry prices when price moved 5%+ | INTC tranche 1 at $95 looks ridiculous when stock closed $108 | Phase 4 rewrite mandates revised entry zones |
+| Not updating tranche entry prices when price moved 5%+ | INTC tranche 1 at $95 looks ridiculous when stock closed $108 | Phase 4/5 rewrite mandates revised entry zones |
 | Not updating page after data change | Rating change exists in data but invisible on home card | Phase 6 sync — check every visible surface |
-| Treating `refreshedAt` as cosmetic | User correctly flags stale timestamps as a sign nothing was actually refreshed | Bump on every audit pass, even for non‑material tickers |
+| Treating `refreshedAt` as cosmetic | User correctly flags stale timestamps as a sign nothing was actually refreshed | Bump on every audit pass, every ticker |
 
 ---
 
@@ -248,14 +258,14 @@ For a clean 15‑ticker daily refresh:
 | 1 Market data pull (parallel) | 10 min |
 | 2 Breaking‑news scan (parallel) | 15 min |
 | 3 Build new date IIFE skeleton | 5 min |
-| 4 Rewrite material tickers (avg 3 to 5 of 15) | 30 to 60 min |
-| 5 Clone path metadata updates | 10 min |
+| 4 Rewrite material tickers (avg 3 to 5 of 15, full 7‑phase) | 30 to 60 min |
+| 5 Rewrite non-material tickers (avg 10 to 12 of 15, tighter) | 30 to 50 min |
 | 6 Web design sync | 5 to 15 min (only if structural change) |
 | 7 Memory log append | 5 min |
 | 8 Verification | 10 min |
-| **Total** | **90 to 130 min** |
+| **Total** | **120 to 175 min** |
 
-If you find yourself going much faster than this, you are skipping steps. The 2026‑05‑06 morning refresh that was rushed into 30 minutes had to be redone three times because the prior date was overwritten, prices were stale, and the page wasn't updated.
+If you find yourself going much faster than this, you are skipping steps. The 2026‑05‑05 → 2026‑05‑06 → 2026‑05‑07 evolution went through three failure modes (overwrite-history, clone-with-banner, clone-with-snapshot) before settling on "all-fresh" as the only honest path. The total time is the cost of evidence-first analysis; don't apologize for it and don't shortcut it.
 
 ---
 
