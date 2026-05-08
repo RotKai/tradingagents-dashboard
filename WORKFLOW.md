@@ -193,12 +193,28 @@ For non‑material tickers, follow the same 7‑phase template as Phase 4 but ti
 
 * Use the prior date's body verbatim. That is clone-path and is forbidden.
 * Inject "morning audit" banners into the body. The user has explicitly flagged these as lazy — they explain staleness instead of fixing it.
+* Compress the body to single-sentence Phases. The user has flagged this on 5/8 — "Bull. Tranche 1 working; thesis intact." is not a bull case, it's a conclusion masquerading as one. **Length is not the metric; substance is.**
 
 **Do:**
 
 * Write a fresh 30-50 line body (each language) that reflects today's information state honestly.
 * Bump `refreshedAt`.
 * Update `tagline`, `action`, `keyRisk` metadata if the prior versions no longer reflect today's price grid.
+
+**Minimum-content rules (mandatory; failing any of these means the body is below NON-MATERIAL spec):**
+
+| Phase | Minimum substance |
+| --- | --- |
+| Phase 1 (same-day market read) | At least 2 paragraphs. Must include: (1) today's specific price action with relative-strength comparison vs cohort/macro, (2) any new fundamental data points or absence thereof (cite the most recent reported quarter for that ticker), (3) cross-asset signals if relevant (BTC for crypto names, oil for USO, etc.) |
+| Phase 2 (Bull vs Bear) | Each side ≥ 2 sentences with at least one specific data point or evidence. "Thesis intact" alone is not a bull case. |
+| Phase 3 (Research Manager + Risk synthesis) | At least 1 paragraph explaining which side the data favors and why. Must include explicit strategic-actions sub-section with tranche zones, sizing, stop. |
+| Phase 4 (Trader plan) | Bullet list with concrete entry zones, stop, sizing, action verb (Buy/Sell/Hold). |
+| Phase 5 (Portfolio Manager Final Decision) | At least 1 paragraph executive summary. Time horizon explicit. |
+| Phase 6/7 (Options Strategy) | Specific structure named, specific strikes/expiry, premium estimate, risk budget, breakeven, **honest exit clause**. The exit clause is not optional. |
+
+**Anti-pattern: "conclusion as argument".** Phrases like "thesis intact", "论据完整", "trade working as designed" are conclusions, not arguments. They belong in Phase 5 (final synthesis) only. In Phase 1 and Phase 2, every claim must be supported by a specific number, fact, price level, or quote — the framework's "evidence first" invariant. If the only available evidence is "no new information today", say that explicitly and then explain what the absence of new information means for the standing thesis.
+
+**Length isn't the goal but it's a useful tripwire.** A NON-MATERIAL body shorter than 30 lines (each language) almost certainly fails the minimum-content rules above; check it. A MATERIAL body shorter than 60 lines almost certainly does too.
 
 ---
 
