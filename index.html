@@ -862,6 +862,7 @@
     var parts = raw.split("/");
     if (parts[0] === "ticker" && parts[1]) return { view: "ticker", ticker: parts[1].toUpperCase(), date: parts[2] || null };
     if (parts[0] === "market") return { view: "market", date: parts[1] || null };
+    if (parts[0] === "valuation") return { view: "valuation", date: parts[1] || null };
     return { view: "home" };
   }
 
@@ -922,6 +923,23 @@
       html += '  <p class="lead-stance">' + escapeHtml(briefStance) + '</p>';
       html += '  <div class="lead-tagline">' + escapeHtml(briefTagline) + '</div>';
       html += '  <span class="lead-cta">' + I18N[state.lang].home.leadCta + '</span>';
+      html += '</a>';
+    }
+
+    // Valuation & Drawdown Risk brief — second lead card if present
+    var vBrief = entry.valuationBrief;
+    if (vBrief) {
+      var vTitle = state.lang === "zh" ? "估值与回撤风险简报" : "Valuation & Drawdown Risk";
+      var vStance = (vBrief.stance && vBrief.stance[state.lang]) || "";
+      var vTagline = (vBrief.tagline && vBrief.tagline[state.lang]) || "";
+      var vKicker = state.lang === "zh" ? "估值专题" : "Valuation Brief";
+      var vCta = state.lang === "zh" ? "阅读完整估值与回撤分析 →" : "Read full valuation & drawdown analysis →";
+      html += '<a class="lead-story" href="#/valuation" style="margin-top:24px;border-left:4px solid #c0392b;">';
+      html += '  <div class="lead-kicker">' + vKicker + '</div>';
+      html += '  <h2>' + escapeHtml(vTitle) + '</h2>';
+      html += '  <p class="lead-stance">' + escapeHtml(vStance) + '</p>';
+      html += '  <div class="lead-tagline">' + escapeHtml(vTagline) + '</div>';
+      html += '  <span class="lead-cta">' + vCta + '</span>';
       html += '</a>';
     }
 
@@ -1177,11 +1195,71 @@
     bumpCounter("market-brief");
   }
 
+  // ----- Valuation Brief detail -----
+  function renderValuation(dateOverride) {
+    var app = document.getElementById("app");
+    var date = dateOverride || state.date;
+    var entry = data[date];
+    var brief = entry && entry.valuationBrief;
+    if (!brief) { app.innerHTML = '<div class="empty-state">' + I18N[state.lang].noData + '</div>'; return; }
+    var title = state.lang === "zh" ? "估值与回撤风险简报" : "Valuation & Drawdown Risk Brief";
+    var stance = (brief.stance && brief.stance[state.lang]) || "";
+    var tagline = (brief.tagline && brief.tagline[state.lang]) || "";
+    var bodyMd = (brief.body && brief.body[state.lang]) || "";
+    var kicker = state.lang === "zh" ? "估值专题" : "Valuation Brief";
+
+    var html = "";
+    html += '<div class="breadcrumb"><a href="#/">' + I18N[state.lang].detail.backHome + '</a><span class="sep">/</span><span>' + kicker + '</span></div>';
+    html += '<div class="article-wrap">';
+    html += '<div class="article-main">';
+    html += '  <header class="article-header">';
+    html += '    <div class="kicker">' + kicker + '</div>';
+    html += '    <h1>' + escapeHtml(title) + '</h1>';
+    html += '    <p class="deck">' + escapeHtml(stance) + '</p>';
+    html += '    <div class="article-byline">';
+    html += '      <span><span class="key">' + I18N[state.lang].detail.publishedOn + '</span><span class="val">' + I18N[state.lang].formatDate(date) + '</span></span>';
+    if (brief.refreshedAt) {
+      html += '      <span><span class="key">' + I18N[state.lang].detail.refreshedAt + '</span><span class="val">' + escapeHtml(brief.refreshedAt) + '</span></span>';
+    }
+    html += '    </div>';
+    html += '  </header>';
+    html += '  <article class="body" id="article-body"></article>';
+    html += '</div>';
+    html += '<aside class="sidebar">';
+    html += '  <div class="panel">';
+    html += '    <div class="panel-head">' + (state.lang === "zh" ? "本期评级速览" : "This Issue at a Glance") + '</div>';
+    html += '    <div style="font-family: var(--sans); font-size: 12.5px; line-height: 1.6;">';
+    var tks = Object.keys(entry.tickers || {});
+    tks.forEach(function (t) {
+      var tk = entry.tickers[t];
+      var r = tk.rating || "";
+      html += '<a href="#/ticker/' + t + '" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted var(--rule); color: var(--ink); text-decoration: none;">';
+      html += '  <span style="font-weight: 600;">' + t + '</span>';
+      html += '  <span class="rating-pill ' + r + '" style="font-size: 9.5px; padding: 2px 6px;">' + r + '</span>';
+      html += '</a>';
+    });
+    html += '    </div>';
+    html += '  </div>';
+    html += '</aside>';
+    html += '</div>';
+    html += '<div class="site-footer">';
+    html += '  <div>' + I18N[state.lang].footer + '</div>';
+    html += '  <div class="colophon">' + I18N[state.lang].colophon + '</div>';
+    html += '</div>';
+    app.innerHTML = html;
+
+    var bodyEl = document.getElementById("article-body");
+    if (bodyMd && window.marked && marked.parse) bodyEl.innerHTML = marked.parse(bodyMd);
+    else if (bodyMd) bodyEl.textContent = bodyMd;
+    bumpCounter("valuation-brief");
+  }
+
   function render() {
     applyChrome();
     var route = parseRoute();
     if (route.view === "ticker") renderDetail(route.ticker, route.date);
     else if (route.view === "market") renderMarket(route.date);
+    else if (route.view === "valuation") renderValuation(route.date);
     else renderHome();
   }
 
