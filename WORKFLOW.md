@@ -157,13 +157,7 @@ For every ticker classified MATERIAL in Phase 2, write a fresh body following th
 
 **Time Horizon:** ...
 
-## Phase 6 · Options Strategy
-**Implied volatility:** [reading]
-**Aligned structure:** [type with rationale]
-**Specific levels:** [strikes, expiration, premium estimate]
-**Risk budget:** [% NAV cap]
-**Breakeven:** [price]
-**Honest exit clause:** [when this is NOT a good options trade]
+[The body ENDS at Phase 5. Per Rule #10 below (added 2026-06-03), the options-strategy phase has been REMOVED — do not write an options section.]
 ```
 
 **Hard rules for the rewrite path:**
@@ -192,6 +186,14 @@ For every ticker classified MATERIAL in Phase 2, write a fresh body following th
    * **Cost acceptance**: this standard is expensive. 20 tickers × 5 subagents/day = 100 subagent calls/day at full fidelity. Acceptable tiering: full 5 agents on (a) holdings, (b) MATERIAL event tickers, (c) tickers with conviction-change candidates; minimum 3 agents (Bull, Bear, Neutral) on NON-MATERIAL carries. The minimum 3 is the FLOOR; below that the dialectic loses its purpose.
    * **No shortcuts**: if multi-agent debate cannot be run on a given ticker (tool failure, time pressure), the body for that ticker must be flagged "**[Multi-agent debate not run for this refresh — single-voice fallback; treat with reduced confidence]**" — the framework's value depends on the user knowing when the standard was met vs missed.
    * **User's explicit standard (binding)**: "mutliagent 分析占 80%，历史回溯占 20%、非常 hard 的 standard" — this is not a suggestion or default; it is the framework's binding service-level commitment.
+
+10. **The RATING is price-conditional, not a quality grade (binding, added 2026-06-03 per user).** Rate each ticker on whether the CURRENT price is attractive to act on, not on whether the underlying is a good company. The rating tier and the `action` field must point the same direction at today's price:
+   * action ADD / BUY at the current price -> rating may be Buy / Overweight
+   * action HOLD / WAIT (do not add at this price) -> rating must be **Hold**, even for a high-quality franchise
+   * action TRIM / SELL -> rating Underweight / Sell
+   A "Buy" or "Overweight" on a name the action says NOT to buy at today's price (WAIT / do-not-chase) is the exact error this rule forbids — it is rating the company, not the price. This SUPERSEDES the earlier convention that treated the rating tier as a price-independent long-term view. Phase 5 must justify the rating in terms of today's price (e.g. "Hold: thesis strong but ~10% above the entry zone makes the current price unattractive"). User's words: "评级的写入应该是根据当前价格，而不是因为它是好股票".
+
+11. **No options recommendations (binding, added 2026-06-03 per user).** The per-ticker body ENDS at Phase 5. Do NOT write a "Phase 6 · Options Strategy" section, implied-vol reads, strikes, spreads, premium estimates, or an options exit clause. Keep the `action` field to spot entries, stops, trims, and triggers only. User's words: "后续的话我不需要关于期权相关操作的推荐了".
 
 ---
 
@@ -228,7 +230,7 @@ For non‑material tickers, follow the same 7‑phase template as Phase 4 but ti
 | Phase 3 (Research Manager + Risk synthesis) | At least 1 paragraph explaining which side the data favors and why. Must include explicit strategic-actions sub-section with tranche zones, sizing, stop. |
 | Phase 4 (Trader plan) | Bullet list with concrete entry zones, stop, sizing, action verb (Buy/Sell/Hold). |
 | Phase 5 (Portfolio Manager Final Decision) | At least 1 paragraph executive summary. Time horizon explicit. |
-| Phase 6/7 (Options Strategy) | Specific structure named, specific strikes/expiry, premium estimate, risk budget, breakeven, **honest exit clause**. The exit clause is not optional. |
+| Phase 6 (Options Strategy) | REMOVED per Rule #10 (2026-06-03). No options section. The body ends at Phase 5. |
 
 **Anti-pattern: "conclusion as argument".** Phrases like "thesis intact", "论据完整", "trade working as designed" are conclusions, not arguments. They belong in Phase 5 (final synthesis) only. In Phase 1 and Phase 2, every claim must be supported by a specific number, fact, price level, or quote — the framework's "evidence first" invariant. If the only available evidence is "no new information today", say that explicitly and then explain what the absence of new information means for the standing thesis.
 
@@ -343,3 +345,111 @@ If you find yourself going much faster than this, you are skipping steps. The 20
 * **Audit timestamp:** the wall‑clock time at which the daily refresh begins. Stamped on `lastRefreshed` and every ticker's `refreshedAt`. Format: `YYYY-MM-DD HH:MM ET`.
 * **Clone path:** ticker carries forward unchanged from prior date except `refreshedAt`. Permitted only for non‑material tickers.
 * **Rewrite path:** ticker gets a fresh 7‑phase body anchored to today's prices and news. Required for material tickers.
+
+---
+
+## Appendix A · Subagent dispatch efficiency rules (added post 6/1 retrospective)
+
+The 5/22 to 6/1 rounds surfaced repeated failure modes around subagent dispatch. The rules below are binding from the next refresh forward. Full retrospective in `WORKFLOW_REVIEW_0601.md`; canonical prompt format in `SUBAGENT_TEMPLATE.md`; generator skeleton in `GENERATOR_TEMPLATE.js`.
+
+### A.1 Tier system (replaces flat "MATERIAL vs NON-MATERIAL" length default)
+
+Every ticker in every round must be classified into one of three length tiers in Phase 2:
+
+| Tier | When | EN body | ZH body |
+| --- | --- | --- | --- |
+| TIGHT (default) | NON-MATERIAL, carry-forward thesis, no specific catalyst today | 800 to 1100 words | 1500 to 2500 CJK chars |
+| STANDARD | MATERIAL Hold, single rating change candidate, pre-event T to 14 days | 1100 to 1500 words | 2500 to 3500 CJK chars |
+| FULL | Highest-conviction long, post-print follow-up, binary in <7 days, conviction shift | 1500 to 2000 words | 3500 to 5000 CJK chars |
+
+Phase 2 deliverable now includes a 22-line tier table:
+```
+TICKER  TIER     RATIONALE (one line)
+USO     FULL     pre-commit mechanical cover trigger likely fires
+GOOGL   FULL     highest-conviction long, AI capex chain extends
+CRCL    TIGHT    no specific news, Fed-pinned float yield
+...
+```
+
+### A.2 Dispatch batch ceiling — 3 in parallel max
+
+Empirical from 5/27, 5/31, 6/1: 5 to 10 parallel subagent dispatches hit session limits and socket timeouts. 1 to 3 parallel completed reliably.
+
+**Hard rule:** dispatch no more than 3 subagents per message turn. If one fails, retry once with a TIGHT-tier-shortened prompt. If still fails, single-voice fallback flagged.
+
+### A.3 Inline macro context
+
+Each subagent prompt must inline a 6-line macro summary rather than asking the subagent to `Read /sessions/.../macro_<date>.md`. Saves one tool call and ~3K context tokens per subagent.
+
+Format (literal):
+```
+MACRO <date> <time>:
+* <index 1>
+* <index 2>
+* <macro driver one line>
+* <crypto / oil / FX>
+* <HK or other regional>
+* <pending binary item>
+```
+
+### A.4 Strict schema enforcement
+
+The subagent must output exactly the canonical schema (no improvisation, no flat-top-level shapes, no body-as-dict). The full list of rejected shapes is in `SUBAGENT_TEMPLATE.md` section "REJECT these output shapes".
+
+**Critical**: `body.en` and `body.zh` must be STRINGS (markdown). The phase_N_* dict shape is forbidden because it forces a Python normalize step. IBIT specifically has hit this 3 rounds in a row (5/25, 5/31, 6/1) — the IBIT prompt must include extra-explicit schema reminder.
+
+### A.5 Generator one-shot
+
+Use `GENERATOR_TEMPLATE.js` as the parameterized skeleton. Per refresh, write a fresh `gen_<DATE>.js` rather than editing a prior one. The generator includes:
+* JSON schema validation BEFORE splice (catches bad ratings, missing body, body-as-dict)
+* JSON schema validation AFTER splice (re-parses data.js, confirms shape)
+* Rating-change summary printout
+
+If validation fails, the script exits non-zero without writing data.js. This prevents silent publishes with bad data.
+
+### A.6 Edit on long generated files is unsafe
+
+Use `Write` for full file replacements. Do not use `Edit` to patch segments of long auto-generated JS/Python. The 6/1 round had Edit truncate `add_lite_nasa_valuation_0527.js` mid-string, causing a SyntaxError that took several minutes to recover from.
+
+### A.7 IBIT-specific quirk (known issue)
+
+IBIT subagent has written non-canonical schemas (`body: null` + content in `debate_en`/`debate_zh`/`key_levels`/`watch_signals`) on 5/25, 5/31, 6/1 — three rounds in a row. Mitigations:
+* Use the extra-explicit schema reminder in IBIT's prompt
+* The generator's `asString(v)` helper handles flat-dict → markdown conversion as a defensive fallback
+* Manually verify IBIT's body.en is a non-empty string before splice
+
+### A.8 Return contract — confirmation only
+
+The subagent return value must be only the line: `Wrote <path> (rating=<X>, EN <W> words, ZH <C> chars)`. Do NOT echo the JSON, do NOT recap the thesis. This saves significant output tokens.
+
+---
+
+## Appendix B · Updated time budget (replaces Section "Time budget reference")
+
+For a clean 22-ticker daily refresh under the tier system + bounded parallelism:
+
+| Phase | Time |
+| --- | --- |
+| 0 Pre-flight + time check | 5 min |
+| 1 Market data pull (parallel 4 searches) | 10 min |
+| 2 Tier classification (22-line table) | 10 min |
+| 3 Generator skeleton + macro/brief prose | 15 min |
+| 4 Subagent dispatch (3-at-a-time, ~22 tickers, ~5 min each, ~37 min raw + retries) | 45 min |
+| 5 Normalize + validate (auto via generator) | 5 min |
+| 6 Web design sync | 0 to 10 min (only if structural change) |
+| 7 Memory log append | 5 min |
+| 8 Verification + sources | 10 min |
+| **Total** | **105 to 130 min** |
+
+Roughly 30% faster than the prior 120 to 175 budget by virtue of TIGHT-tier default, inline macro, in-generator validation, and bounded parallel dispatch.
+
+---
+
+## Appendix C · The 80/20 standard under the new tier system
+
+Rule #9's "80/20 hard standard" remains binding. Under the tier system:
+* 80% means at least 17/22 tickers received genuine multi-agent debate at their assigned tier (TIGHT/STANDARD/FULL)
+* The remaining ≤5 may be single-voice fallback BUT each must carry the explicit `[Multi-agent debate not run]` flag
+* If fewer than 17/22 receive multi-agent treatment, the round is FLAGGED in the marketBrief stance line — not silently published
+
+The 6/1 round initially failed this at 2/22 multi-agent + 20/22 single-voice, was flagged honestly in the marketBrief body, and remediated to 22/22 within 5 hours. The new tier defaults + dispatch ceiling should prevent that cascade going forward.

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TradingAgents · Daily Coverage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -288,6 +290,8 @@
     color: var(--ink-soft);
     letter-spacing: -0.003em;
   }
+  .macro-callout p { margin: 0 0 12px; }
+  .macro-callout p:last-child { margin-bottom: 0; }
   .macro-callout .label {
     display: block;
     font-family: var(--sans);
@@ -907,7 +911,9 @@
     if (macro) {
       html += '<div class="macro-callout">';
       html += '  <span class="label">' + I18N[state.lang].home.macroLabel + '</span>';
-      html += escapeHtml(macro);
+      macro.split(/\n{2,}/).map(function (s) { return s.trim(); }).filter(Boolean).forEach(function (par) {
+        html += '<p>' + escapeHtml(par).replace(/\n/g, '<br>') + '</p>';
+      });
       html += '</div>';
     }
 
